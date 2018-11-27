@@ -1,12 +1,6 @@
-package com.lingyun.projects.install.locallife.config;
+package com.lingyun.projects.install.pccexcel.config;
 
-import nz.net.ultraq.thymeleaf.LayoutDialect;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.resourceresolver.UrlResourceResolver;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.view.ThymeleafViewResolver;
-import org.thymeleaf.templateresolver.UrlTemplateResolver;
 
 @Configuration
 public class ThymeleafWebMvcConfig {

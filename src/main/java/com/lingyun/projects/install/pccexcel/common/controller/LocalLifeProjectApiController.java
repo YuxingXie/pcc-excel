@@ -1,4 +1,4 @@
-package com.lingyun.projects.install.locallife.common.controller;
+package com.lingyun.projects.install.pccexcel.common.controller;
 
 import com.lingyun.common.support.base.BaseRestSpringController;
 import org.springframework.web.bind.annotation.RequestMapping;

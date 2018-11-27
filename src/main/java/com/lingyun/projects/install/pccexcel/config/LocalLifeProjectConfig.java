@@ -1,4 +1,4 @@
-package com.lingyun.projects.install.locallife.config;
+package com.lingyun.projects.install.pccexcel.config;
 
 import com.lingyun.common.annotation.ProjectConfig;
 import com.lingyun.common.support.data.FrontProject;
