@@ -11,8 +11,8 @@ public class HomeFrame extends JFrame {
     private JPanel jPanelCenter;
     private JFileChooser excelFileChooser;
     private JTextField titleTextField;
-    private JScrollPane excelDataPanel;
-    public HomeFrame(JPanel jPanelCenter, JFileChooser excelFileChooser,JTextField titleTextField,JScrollPane excelDataPanel) {
+    private JTabbedPane excelDataPanel;
+    public HomeFrame(JPanel jPanelCenter, JFileChooser excelFileChooser,JTextField titleTextField,JTabbedPane excelDataPanel) {
         this.jPanelCenter = jPanelCenter;
         this.excelFileChooser = excelFileChooser;
         this.titleTextField = titleTextField;

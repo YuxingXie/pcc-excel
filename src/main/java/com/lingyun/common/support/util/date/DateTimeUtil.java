@@ -1,7 +1,6 @@
 package com.lingyun.common.support.util.date;
 
 import com.lingyun.common.support.util.string.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -11,7 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DateTimeUtil extends DateUtils {
+public class DateTimeUtil{
 
 
     public static class DateFormatString {

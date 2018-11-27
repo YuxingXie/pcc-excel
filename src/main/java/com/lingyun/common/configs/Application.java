@@ -28,7 +28,7 @@ import java.io.IOException;
 @EntityScan(basePackages ={"com.lingyun.projects.install.**.entity"})
 public class Application implements ApplicationListener<ContextRefreshedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
 
         ConfigurableApplicationContext context = new SpringApplicationBuilder(Application.class).headless(false).run(args);
@@ -38,7 +38,7 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     @Bean
-    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JScrollPane excelDataPanel) {
+    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel) {
         return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField,excelDataPanel);
     }
 

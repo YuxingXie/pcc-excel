@@ -4,6 +4,10 @@ import com.lingyun.common.support.util.file.ExcelUtils;
 import com.lingyun.projects.install.pccexcel.domain.entity.Excel;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.List;
+import java.util.SortedMap;
+
 @Service
 public class ExcelService {
 
@@ -11,11 +15,4 @@ public class ExcelService {
         return null;
     }
 
-    public String[] getColumnNames(String id){
-        return ExcelUtils.getColumnNames(id);
-    }
-
-    public Object[][] getRowData(String id){
-        return ExcelUtils.getRowData(id);
-    }
 }
