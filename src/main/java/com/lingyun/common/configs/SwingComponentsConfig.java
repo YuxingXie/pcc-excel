@@ -1,6 +1,6 @@
 package com.lingyun.common.configs;
 
-import com.lingyun.common.support.swing.components.SimpleStringComponent;
+import com.lingyun.projects.install.pccexcel.domain.service.ExcelService;
 import javafx.stage.FileChooser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,5 +34,12 @@ public class SwingComponentsConfig {
         textField.setText("what's new?");
         textField.setEditable(false);
         return textField;
+    }
+    @Bean
+    public JScrollPane excelDataPanel(ExcelService excelService){
+
+        JTable table = new JTable(excelService.getRowData(""),excelService.getColumnNames(""));
+
+        return new JScrollPane(table);
     }
 }

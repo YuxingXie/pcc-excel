@@ -11,10 +11,12 @@ public class HomeFrame extends JFrame {
     private JPanel jPanelCenter;
     private JFileChooser excelFileChooser;
     private JTextField titleTextField;
-    public HomeFrame(JPanel jPanelCenter, JFileChooser excelFileChooser,JTextField titleTextField) {
+    private JScrollPane excelDataPanel;
+    public HomeFrame(JPanel jPanelCenter, JFileChooser excelFileChooser,JTextField titleTextField,JScrollPane excelDataPanel) {
         this.jPanelCenter = jPanelCenter;
         this.excelFileChooser = excelFileChooser;
         this.titleTextField = titleTextField;
+        this.excelDataPanel=excelDataPanel;
         setLayout(new BorderLayout(10, 10));
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
@@ -31,7 +33,7 @@ public class HomeFrame extends JFrame {
         add(this.jPanelCenter, BorderLayout.CENTER);
 
         this.titleTextField.setText("当前文件: "+(Constant.currentExcel==null?"没有选择excel文件":Constant.currentExcel.getAbsolutePath()));
-
+        this.jPanelCenter.add(excelDataPanel);
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);

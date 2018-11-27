@@ -24,7 +24,7 @@ public class DataSourceConfig {
     public DataSource dataSourceH2_02() {
         DriverManagerDataSource ds=new DriverManagerDataSource();
         ds.setDriverClassName("org.h2.Driver");
-        ds.setUrl("jdbc:h2:~/lingyun;AUTO_SERVER=TRUE");
+        ds.setUrl("jdbc:h2:~/pcc;AUTO_SERVER=TRUE");
         ds.setUsername("sa");
         return ds;
     }

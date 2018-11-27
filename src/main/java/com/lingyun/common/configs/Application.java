@@ -19,7 +19,7 @@ import java.io.IOException;
 @SpringBootApplication
         (scanBasePackages = {
         "com.lingyun.projects.install.**.controller",
-//        "com.lingyun.projects.install.**.service",
+        "com.lingyun.projects.install.**.service",
         "com.lingyun.projects.install.**.config",
         "com.lingyun.common.annotation.controller",
         "com.lingyun.common.configs"
@@ -38,9 +38,8 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     @Bean
-    public HomeFrame simpleFrame(JPanel jPanelCenter,JFileChooser excelFileChooser,JTextField titleTextField) {
-
-        return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField);
+    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JScrollPane excelDataPanel) {
+        return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField,excelDataPanel);
     }
 
 
