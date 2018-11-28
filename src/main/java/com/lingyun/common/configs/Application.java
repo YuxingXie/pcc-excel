@@ -2,29 +2,33 @@ package com.lingyun.common.configs;
 
 
 import com.lingyun.projects.install.pccexcel.components.HomeFrame;
+import com.lingyun.projects.install.pccexcel.config.Constant;
+import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
+import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.swing.*;
-import java.io.IOException;
 
 
 @SpringBootApplication
         (scanBasePackages = {
         "com.lingyun.projects.install.**.controller",
-        "com.lingyun.projects.install.**.service",
+                "com.lingyun.projects.install.pccexcel.domain.excel.service",
         "com.lingyun.projects.install.**.config",
         "com.lingyun.common.annotation.controller",
         "com.lingyun.common.configs"
         })
-//@EnableJpaRepositories(basePackages = {"com.lingyun.projects.install.**.repo"})
+@EnableJpaRepositories(basePackages = {"com.lingyun.projects.install.**.repo"})
 @EntityScan(basePackages ={"com.lingyun.projects.install.**.entity"})
 public class Application implements ApplicationListener<ContextRefreshedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -32,19 +36,22 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
 
 
         ConfigurableApplicationContext context = new SpringApplicationBuilder(Application.class).headless(false).run(args);
-        HomeFrame appFrame = context.getBean(HomeFrame.class);
-        appFrame.setVisible(true);
 
     }
 
     @Bean
-    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel) {
-        return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField,excelDataPanel);
+    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService) {
+        return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField,excelDataPanel,excelService);
     }
 
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        ApplicationContext context=contextRefreshedEvent.getApplicationContext();
+        ExcelRepository excelRepository=context.getBean(ExcelRepository.class);
+        Constant.currentExcel=excelRepository.findByLastOpenDateGreatest();
+        HomeFrame appFrame = context.getBean(HomeFrame.class);
+        appFrame.setVisible(true);
 
     }
 

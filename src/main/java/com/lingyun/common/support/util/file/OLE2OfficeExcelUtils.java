@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ExcelUtils {
+public class OLE2OfficeExcelUtils {
 
 
     public static void main(String[] args) throws Exception {

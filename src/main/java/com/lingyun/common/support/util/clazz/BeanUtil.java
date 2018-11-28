@@ -39,13 +39,7 @@ public class BeanUtil extends BeanUtils {
         return mapper.readValue(json, Map.class);
     }
 
-    public static String mapToJson(Map map) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(map);
-    }
-//    public static boolean emptyCollection(Collection collection) {
-//        return collection==null||collection.size()==0;
-//    }
+
     public static boolean emptyCollection(Collection collection) {
         return collection==null||collection.size()==0;
 
