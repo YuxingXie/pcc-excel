@@ -12,20 +12,20 @@ import java.util.*;
 public class OLE2OfficeExcelUtils {
 
 
-    public static void main(String[] args) throws Exception {
-
-        File file = new File("D:\\document\\项目\\政协excel\\aa46e5671990fba676265d692abb543c.xls");
-        SortedMap<String, List<List<Object>>> result = getData(file);
-
-
+    public static void printSortedMap(SortedMap<String, List<List<Object>>> result){
+        System.out.println("start print sortedMap...");
+        if(result==null) {
+            System.out.println("sortedMap is null");
+            return;
+        }
         for( String sheetName:result.keySet()){
             List<List<Object>> sheetData=result.get(sheetName);
             System.out.println("sheet name:"+sheetName);
             for(List<Object> rowData:sheetData) {
                 for(Object cellValue:rowData) {
-//                    System.out.print(cellValue+"\t\t\t");
+                    System.out.print(cellValue+"\t\t\t");
                 }
-//                System.out.println();
+                System.out.println();
             }
         }
     }

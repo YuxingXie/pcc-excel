@@ -40,8 +40,8 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     @Bean
-    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService) {
-        return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField,excelDataPanel,excelService);
+    public HomeFrame simpleFrame(JPanel jPanelCenter, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService,JButton importExcelBtn) {
+        return new HomeFrame(jPanelCenter, excelFileChooser,titleTextField,excelDataPanel,excelService, importExcelBtn);
     }
 
 

@@ -1,9 +1,14 @@
 package com.lingyun.projects.install.pccexcel.domain.excel.entity;
 
+import com.lingyun.common.support.util.clazz.BeanUtil;
+import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
+import java.util.SortedMap;
 
 @Entity
 public class Excel {
@@ -52,5 +57,17 @@ public class Excel {
 
     public void setDataJson(byte[] dataJson) {
         this.dataJson = dataJson;
+    }
+
+    public SortedMap<String, List<List<Object>>> toSortedMap(){
+        SortedMap<String, List<List<Object>>> sortedMap =null;
+        try {
+            sortedMap = BeanUtil.jsonToJava(new String(dataJson,"UTF-8"),SortedMap.class);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        OLE2OfficeExcelUtils.printSortedMap(sortedMap);
+        return sortedMap;
     }
 }

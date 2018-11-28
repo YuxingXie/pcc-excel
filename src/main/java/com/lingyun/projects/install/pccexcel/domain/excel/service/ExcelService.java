@@ -23,4 +23,7 @@ public class ExcelService {
 
         return BeanUtil.emptyCollection(excelList)?null:excelList.get(0);
     }
+    public Excel findByLastOpenDateGreatest(){
+        return excelRepository.findByLastOpenDateGreatest();
+    }
 }

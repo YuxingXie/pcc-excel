@@ -6,11 +6,13 @@ import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
+import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 
 import javax.annotation.Resource;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,13 +25,15 @@ public class HomeFrame extends JFrame {
     private JTextField titleTextField;
     private JTabbedPane excelDataPanel;
     private ExcelService excelService;
+    private JButton importExcelBtn;
     @Resource private ExcelRepository excelRepository;
-    public HomeFrame(JPanel jPanelCenter, JFileChooser excelFileChooser,JTextField titleTextField,JTabbedPane excelDataPanel,ExcelService excelService) {
+    public HomeFrame(JPanel jPanelCenter, JFileChooser excelFileChooser,JTextField titleTextField,JTabbedPane excelDataPanel,ExcelService excelService,JButton importExcelBtn) {
         this.jPanelCenter = jPanelCenter;
         this.excelFileChooser = excelFileChooser;
         this.titleTextField = titleTextField;
         this.excelDataPanel=excelDataPanel;
         this.excelService=excelService;
+        this.importExcelBtn=importExcelBtn;
         setLayout(new BorderLayout(10, 10));
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
@@ -39,7 +43,7 @@ public class HomeFrame extends JFrame {
         setLocation(screenWidth / 4, screenHeight / 4);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("宁乡市政协excel工具");
-        setIconImage(new ImageIcon("classpath:images/icon/icon.png").getImage());
+        setIconImage(new ImageIcon(ClassLoader.getSystemResource("images/icon/icon.png")).getImage());
         setLocationByPlatform(true);
 
         add(this.jPanelCenter, BorderLayout.CENTER);
@@ -50,6 +54,19 @@ public class HomeFrame extends JFrame {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         this.jPanelCenter.add(label,BorderLayout.NORTH);
         addMenuBar();
+
+        this.importExcelBtn.addActionListener(e -> {
+
+
+            openFileChooser(e);
+
+        });
+    }
+
+    private void redrawExcelDataPanel() {
+        HomeFrame.this.excelDataPanel=ComponentsDrawTools.drawTabbedPaneByExcel(Constant.currentExcel,HomeFrame.this.excelDataPanel);
+        HomeFrame.this.excelDataPanel.revalidate();
+        HomeFrame.this.excelDataPanel.repaint();
     }
 
     private void addMenuBar() {
@@ -61,10 +78,7 @@ public class HomeFrame extends JFrame {
         JMenuItem menuItem2 = new JMenuItem("最近打开...");
         JMenuItem menuItem3 = new JMenuItem("退出");
 
-        menuItem1.addActionListener(e -> {
-            openFileChooser(e);
-
-        });
+        menuItem1.addActionListener(e -> {openFileChooser(e);});
         menuItem3.addActionListener(e -> System.exit(0));
         menuFile.add(menuItem1);
         menuFile.add(menuItem2);
@@ -84,7 +98,7 @@ public class HomeFrame extends JFrame {
     }
 
     private void openFileChooser(ActionEvent e) {
-        System.out.println("菜单监听.......,action command:"+e.getActionCommand());
+        System.out.println("e.getSource():"+e.getSource());
         HomeFrame.this.jPanelCenter.add(HomeFrame.this.excelFileChooser, BorderLayout.CENTER);
 
         int result = HomeFrame.this.excelFileChooser.showOpenDialog(HomeFrame.this.jPanelCenter);
@@ -111,6 +125,7 @@ public class HomeFrame extends JFrame {
             excel=excelRepository.save(excel);
             Constant.currentExcel=excel;
             HomeFrame.this.titleTextField.setText("当前文件: " +excel.getPath());
+            redrawExcelDataPanel();
             HomeFrame.this.titleTextField.revalidate();
             HomeFrame.this.titleTextField.repaint();
             HomeFrame.this.jPanelCenter.revalidate();
