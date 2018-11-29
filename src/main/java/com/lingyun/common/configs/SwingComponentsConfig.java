@@ -20,12 +20,28 @@ import java.util.SortedMap;
 @Configuration
 public class SwingComponentsConfig {
     @Bean
-    public JPanel jPanelCenter(){
-        JPanel jPanelCenter=new JPanel();
-        jPanelCenter.setLayout(new BorderLayout());
-        return jPanelCenter;
+    public JPanel excelParentPanel(){
+        JPanel excelParentPanel=new JPanel();
+        excelParentPanel.setLayout(new BorderLayout());
+        return excelParentPanel;
     }
-@Bean
+    @Bean
+    public JPanel groupManagerPanel(){
+        JPanel groupManagerPanel=new JPanel();
+        groupManagerPanel.setBackground(Color.LIGHT_GRAY);
+        return groupManagerPanel;
+    }
+    @Bean
+    public JTable personGroupTable(){
+        return new JTable();
+    }
+    @Bean
+    public JScrollPane personGroupScrollPane(JTable personGroupTable){
+        JScrollPane personGroupScrollPane = new JScrollPane(personGroupTable);
+        return personGroupScrollPane;
+    }
+
+    @Bean
     public JFileChooser excelFileChooser(){
         JFileChooser fileChooser=new JFileChooser("/Users/xieyuxing/公司文档");
         FileFilter filter1 =new FileNameExtensionFilter("microsoft excel files","xls","xlsx","xlt","xml","xlsm","xlsb","xltx","xla","xlw","xlr");
@@ -58,7 +74,7 @@ public class SwingComponentsConfig {
 
             tabPanel.add(label);
             tabPanel.add(importExcelBtn);
-            jTabbedpane.addTab("",new ImageIcon(ClassLoader.getSystemResource("images/icon/icon.png")),tabPanel);
+            jTabbedpane.addTab("没有选择文件",tabPanel);
             return jTabbedpane;
         }
         return ComponentsDrawTools.drawTabbedPaneByExcel(excel, jTabbedpane);
