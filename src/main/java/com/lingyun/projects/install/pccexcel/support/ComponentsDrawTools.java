@@ -1,6 +1,8 @@
 package com.lingyun.projects.install.pccexcel.support;
 
+import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
+import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,5 +37,27 @@ public class ComponentsDrawTools {
 
 
         return jTabbedpane;
+    }
+
+    public static Object[] getColumnNamesOfPersonGroups() {
+
+        return new Object[]{"分组id(只读)","分组名称","描述","创建日期(只读)"};
+
+
+    }
+    public static Object[][] getRowDataOfPersonGroups(List<PersonGroup> personGroups) {
+
+        Object[] columnNames=getColumnNamesOfPersonGroups();
+        Object[][] rowData=new Object[personGroups.size()][columnNames.length];
+        for(int i=0;i<personGroups.size();i++){
+            PersonGroup personGroup=personGroups.get(i);
+            rowData[i][0]=personGroup.getId();
+            rowData[i][1]=personGroup.getGroupName();
+            rowData[i][2]=personGroup.getDescription();
+            rowData[i][3]= DateTimeUtil.DateRepresentation.toString(personGroup.getCreateDate(),DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss);
+        }
+
+        return rowData;
+
     }
 }

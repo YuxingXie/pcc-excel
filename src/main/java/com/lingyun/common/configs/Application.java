@@ -44,8 +44,8 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     @Bean
-    public HomeFrame simpleFrame(JPanel excelParentPanel,JPanel groupManagerPanel, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService,JButton importExcelBtn,JTable personGroupTable,JScrollPane personGroupScrollPane) {
-        return new HomeFrame(excelParentPanel,groupManagerPanel, excelFileChooser,titleTextField,excelDataPanel,excelService, importExcelBtn,personGroupTable,personGroupScrollPane);
+    public HomeFrame simpleFrame(JPanel excelParentPanel,JPanel groupManagerPanel, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService,JButton importExcelBtn,PersonGroupRepository personGroupRepository) {
+        return new HomeFrame(excelParentPanel,groupManagerPanel, excelFileChooser,titleTextField,excelDataPanel,excelService, importExcelBtn,personGroupRepository);
     }
 
 

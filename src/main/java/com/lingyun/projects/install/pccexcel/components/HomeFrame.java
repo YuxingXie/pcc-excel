@@ -1,7 +1,9 @@
 package com.lingyun.projects.install.pccexcel.components;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
+import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
+import com.lingyun.common.support.util.string.StringUtils;
 import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
@@ -12,7 +14,6 @@ import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 
 import javax.annotation.Resource;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,12 +34,13 @@ public class HomeFrame extends JFrame {
     private ExcelService excelService;
     private JButton importExcelBtn;
     private JTable personGroupTable;
-    private DefaultTableModel personGroupTableModel;
+    private PersonGroupTableModel personGroupTableModel;
     private JScrollPane personGroupScrollPane;
+    private List<PersonGroup> personGroups;
     @Resource private ExcelRepository excelRepository;
-    @Resource private PersonGroupRepository personGroupRepository;
-    public HomeFrame(JPanel excelParentPanel, JPanel groupManagerPanel, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,JTable personGroupTable,JScrollPane personGroupScrollPane) {
-        injectComponents(excelParentPanel, groupManagerPanel, excelFileChooser, titleTextField, excelDataPanel, excelService, importExcelBtn, personGroupTable,personGroupScrollPane);
+    private PersonGroupRepository personGroupRepository;
+    public HomeFrame(JPanel excelParentPanel, JPanel groupManagerPanel, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,PersonGroupRepository personGroupRepository) {
+        injectComponents(excelParentPanel, groupManagerPanel, excelFileChooser, titleTextField, excelDataPanel, excelService, importExcelBtn,personGroupRepository);
         initFrame();
         addMenuBar();
         addBottomButtonGroup();
@@ -65,9 +67,18 @@ public class HomeFrame extends JFrame {
         JLabel label=new JLabel("双击单元格修改数据且不会覆盖原始文件，点击\"保存\"后会导出到excel中；点击\"刷新\"可以重新载入excel内容。");
         label.setHorizontalAlignment(SwingConstants.CENTER);
         this.excelParentPanel.add(label,BorderLayout.NORTH);
+        this.personGroups =personGroupRepository.findAll();
+        this.personGroupTableModel=new PersonGroupTableModel(ComponentsDrawTools.getRowDataOfPersonGroups(this.personGroups),ComponentsDrawTools.getColumnNamesOfPersonGroups());
+
+        this.personGroupTable=new JTable(this.personGroupTableModel);
+//        this.personGroupTable.setBackground(new Color(244, 244, 244));
+        this.personGroupTable.setGridColor(new Color(230, 230, 230));
+        this.personGroupTable.getTableHeader().setPreferredSize(new Dimension(50, 30));
+        this.personGroupScrollPane=new JScrollPane(this.personGroupTable);
+//        this.personGroupScrollPane.getViewport().setBackground(Color.LIGHT_GRAY);
     }
 
-    private void injectComponents(JPanel excelParentPanel, JPanel groupManagerPanel,JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,JTable personGroupTable,JScrollPane personGroupScrollPane) {
+    private void injectComponents(JPanel excelParentPanel, JPanel groupManagerPanel,JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,PersonGroupRepository personGroupRepository) {
         this.excelParentPanel = excelParentPanel;
         this.groupManagerPanel =groupManagerPanel;
         this.excelFileChooser = excelFileChooser;
@@ -75,8 +86,8 @@ public class HomeFrame extends JFrame {
         this.excelDataPanel=excelDataPanel;
         this.excelService=excelService;
         this.importExcelBtn=importExcelBtn;
-        this.personGroupTable=personGroupTable;
-        this.personGroupScrollPane=personGroupScrollPane;
+
+        this.personGroupRepository=personGroupRepository;
     }
 
     private void redrawExcelDataPanel() {
@@ -124,9 +135,12 @@ public class HomeFrame extends JFrame {
         menuHelp.add(menuItemHelp2);
         menuBar.add(menuHelp);
     }
+
+    //TODO:Many problems
     public void renderGroupManagerPanel() {
         System.out.println("渲染用户分组组件");
         this.excelParentPanel.setVisible(false);
+        this.groupManagerPanel.setVisible(true);
         this.groupManagerPanel.setLayout(new BorderLayout());
         JPanel southPanel=new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton addBtn=new JButton("添加分组(添加后请点击保存)");
@@ -138,43 +152,30 @@ public class HomeFrame extends JFrame {
 
         this.groupManagerPanel.add(southPanel,BorderLayout.SOUTH);
         JPanel centerPanel=new JPanel(new BorderLayout());
-        List<PersonGroup> personGroupList =personGroupRepository.findAll();
 
-        if(!BeanUtil.emptyCollection(personGroupList)) {
-            updateTableModelByPersonGroupList(personGroupList);
-            this.personGroupTable = new JTable(this.personGroupTableModel) {
-                public boolean isCellEditable(int row, int column) {
-                    return column != 0;
-                }
-            };
+
+        if(!BeanUtil.emptyCollection(this.personGroups)) {
+//            updateTableModelByPersonGroupList();
+//            this.personGroupTable = new JTable(this.personGroupTableModel);
+
 //            this.personGroupTable.setModel(this.personGroupTableModel);
 //            this.personGroupTable.getColumnModel().getColumn(0).setCellEditor(null);
            personGroupButtonEventBinding(addBtn, deleteBtn, saveBtn);
         }
-        this.personGroupScrollPane=new JScrollPane(this.personGroupTable);
+
         centerPanel.add(this.personGroupScrollPane,BorderLayout.CENTER);
         centerPanel.add(new JLabel("分组列表："),BorderLayout.NORTH);
         this.groupManagerPanel.add(centerPanel,BorderLayout.CENTER);
         add(this.groupManagerPanel);
     }
 
-    private void updateTableModelByPersonGroupList(List<PersonGroup> personGroupList) {
-        Object[] columnNames=new Object[]{"分组id(不可编辑)","分组名称","描述"};
-        Object[][] rowData=new Object[personGroupList.size()][columnNames.length];
-        for(int i=0;i<personGroupList.size();i++){
-            PersonGroup personGroup=personGroupList.get(i);
-            rowData[i][0]=personGroup.getId();
-            rowData[i][1]=personGroup.getGroupName();
-            rowData[i][2]=personGroup.getDescription();
-        }
-        this.personGroupTableModel=new DefaultTableModel(rowData,columnNames);
-    }
+
 
     private void personGroupButtonEventBinding(JButton addBtn, JButton deleteBtn, JButton saveBtn) {
         saveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<PersonGroup> personGroups=new ArrayList<>();
+                List<PersonGroup> personGroupsToAdd=new ArrayList<>();
                 for(int i=0;i<HomeFrame.this.personGroupTable.getRowCount();i++){
                     PersonGroup personGroup=new PersonGroup();
                     Object _id=HomeFrame.this.personGroupTable.getValueAt(i,0);
@@ -183,7 +184,7 @@ public class HomeFrame extends JFrame {
                     }
                     Object groupName=HomeFrame.this.personGroupTable.getValueAt(i,1);
                     if(groupName==null||groupName.toString().trim().equals("")){
-                        JOptionPane.showMessageDialog(saveBtn,"第 "+(i+1)+" 行 分组名称不能为空");
+                        JOptionPane.showMessageDialog(HomeFrame.this,"第 "+(i+1)+" 行 分组名称不能为空");
                         return;
                     }
                     personGroup.setGroupName(groupName.toString());
@@ -192,44 +193,54 @@ public class HomeFrame extends JFrame {
                     if(description!=null&&!description.toString().trim().equals("")){
                         personGroup.setDescription(HomeFrame.this.personGroupTable.getValueAt(i,2).toString());
                     }
-                    personGroups.add(personGroup);
-                }
-                System.out.println(BeanUtil.javaToJson(personGroups));
-                List<PersonGroup> newPersonGroups=HomeFrame.this.personGroupRepository.save(personGroups);
-                updateTableModelByPersonGroupList(newPersonGroups);
-//                HomeFrame.this.personGroupScrollPane.remove(HomeFrame.this.personGroupTable);
-                HomeFrame.this.personGroupTable = new JTable(HomeFrame.this.personGroupTableModel) {
-                    public boolean isCellEditable(int row, int column) {
-                        return column != 0;
+                    Object createDate=HomeFrame.this.personGroupTable.getValueAt(i,3);
+                    if(createDate!=null&&!createDate.toString().trim().equals("")){
+                        personGroup.setCreateDate(DateTimeUtil.DateConvert.convertStringToDateTime(DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss,HomeFrame.this.personGroupTable.getValueAt(i,3).toString()));
                     }
-                };
-                HomeFrame.this.personGroupScrollPane=new JScrollPane(HomeFrame.this.personGroupTable);
-                JOptionPane.showMessageDialog(saveBtn,"保存成功！");
-//                HomeFrame.this.groupManagerPanel.revalidate();
-//                HomeFrame.this.groupManagerPanel.repaint();
-//                renderGroupManagerPanel();
+                    personGroupsToAdd.add(personGroup);
+                }
+
+                HomeFrame.this.personGroups=HomeFrame.this.personGroupRepository.save(personGroupsToAdd);
+                System.out.println(BeanUtil.javaToJson(HomeFrame.this.personGroups));
+                HomeFrame.this.personGroupTableModel.setPersonGroups(HomeFrame.this.personGroups);
+//                HomeFrame.this.personGroupScrollPane.remove(HomeFrame.this.personGroupTable);
+                //TODO
+
+//                HomeFrame.this.personGroupScrollPane=new JScrollPane(HomeFrame.this.personGroupTable);
+                JOptionPane.showMessageDialog(HomeFrame.this,"保存成功！");
+//                HomeFrame.this.personGroupTable.validate();
+//                HomeFrame.this.personGroupTable.updateUI();
             }
         });
         deleteBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row=HomeFrame.this.personGroupTable.getSelectedRow();
+//                int row=HomeFrame.this.personGroupTable.rowAtPoint(e.getPoint());
+                System.out.println("selected row:"+row);
                 if(row<0){
-                    JOptionPane.showMessageDialog(deleteBtn,"请选择一条数据!");
+                    JOptionPane.showMessageDialog(HomeFrame.this,"请选择一条数据!");
                     return;
                 }
-                String id=HomeFrame.this.personGroupTable.getValueAt(row,0).toString();
-                HomeFrame.this.personGroupRepository.delete(id);
+                Object id=HomeFrame.this.personGroupTable.getValueAt(row,0);
+                if(id!=null&& StringUtils.isNotBlank(id.toString())){
+                    HomeFrame.this.personGroupRepository.delete(id.toString());
+                    HomeFrame.this.personGroups=personGroupRepository.findAll();
+                }
+
                 HomeFrame.this.personGroupTableModel.removeRow(row);
-                JOptionPane.showMessageDialog(deleteBtn,"删除成功!");
+                HomeFrame.this.personGroupTableModel.setPersonGroups(HomeFrame.this.personGroups);
+                JOptionPane.showMessageDialog(HomeFrame.this,"删除成功!");
+//                HomeFrame.this.personGroupTable.validate();
+//                HomeFrame.this.personGroupTable.updateUI();
             }
         });
         addBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int lastRow=HomeFrame.this.personGroupTable.getRowCount();
-                System.out.println(lastRow);
-                Object[] newRow=new Object[3];
+
+                Object[] newRow=new Object[4];
+                HomeFrame.this.personGroups.add(new PersonGroup());
                 HomeFrame.this.personGroupTableModel.addRow(newRow);
             }
         });
@@ -237,14 +248,16 @@ public class HomeFrame extends JFrame {
 
     private void openFileChooser(ActionEvent e) {
         System.out.println("e.getSource():"+e.getSource());
-        HomeFrame.this.excelParentPanel.add(HomeFrame.this.excelFileChooser, BorderLayout.CENTER);
+        this.groupManagerPanel.setVisible(false);
+        this.excelParentPanel.setVisible(true);
+        this.excelParentPanel.add(this.excelFileChooser, BorderLayout.CENTER);
 
-        int result = HomeFrame.this.excelFileChooser.showOpenDialog(HomeFrame.this.excelParentPanel);
+        int result = this.excelFileChooser.showOpenDialog(this.excelParentPanel);
         System.out.println(result);
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            File file = HomeFrame.this.excelFileChooser.getSelectedFile();
-            Excel excel = HomeFrame.this.excelService.findByFilePath(file.getAbsolutePath());
+            File file = this.excelFileChooser.getSelectedFile();
+            Excel excel = this.excelService.findByFilePath(file.getAbsolutePath());
             String json= null;
             try {
                 json = BeanUtil.javaToJson(OLE2OfficeExcelUtils.getData(file));
@@ -262,12 +275,12 @@ public class HomeFrame extends JFrame {
             System.out.println(new String(excel.getDataJson(),StandardCharsets.UTF_8));
             excel=excelRepository.save(excel);
             Constant.currentExcel=excel;
-            HomeFrame.this.titleTextField.setText("当前文件: " +excel.getPath());
+            this.titleTextField.setText("当前文件: " +excel.getPath());
             redrawExcelDataPanel();
-            HomeFrame.this.titleTextField.revalidate();
-            HomeFrame.this.titleTextField.repaint();
-            HomeFrame.this.excelParentPanel.revalidate();
-            HomeFrame.this.excelParentPanel.repaint();
+            this.titleTextField.revalidate();
+            this.titleTextField.repaint();
+            this.excelParentPanel.revalidate();
+            this.excelParentPanel.repaint();
         }
     }
 

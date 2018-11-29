@@ -2,7 +2,9 @@ package com.lingyun.common.configs;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
+import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
+import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
 import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 import org.springframework.context.annotation.Bean;
@@ -31,19 +33,18 @@ public class SwingComponentsConfig {
         groupManagerPanel.setBackground(Color.LIGHT_GRAY);
         return groupManagerPanel;
     }
-    @Bean
-    public JTable personGroupTable(){
-        return new JTable();
-    }
-    @Bean
-    public JScrollPane personGroupScrollPane(JTable personGroupTable){
-        JScrollPane personGroupScrollPane = new JScrollPane(personGroupTable);
-        return personGroupScrollPane;
-    }
+
 
     @Bean
-    public JFileChooser excelFileChooser(){
-        JFileChooser fileChooser=new JFileChooser("/Users/xieyuxing/公司文档");
+    public JFileChooser excelFileChooser(ExcelRepository excelRepository){
+        String currentDir;
+        if(Constant.currentExcel!=null){
+            currentDir=Constant.currentExcel.getPath();
+        }else {
+            Excel excel=excelRepository.findByLastOpenDateGreatest();
+            currentDir=excel==null?null:excel.getPath();
+        }
+        JFileChooser fileChooser=new JFileChooser(currentDir);
         FileFilter filter1 =new FileNameExtensionFilter("microsoft excel files","xls","xlsx","xlt","xml","xlsm","xlsb","xltx","xla","xlw","xlr");
         fileChooser.setFileFilter(filter1);
         return fileChooser;

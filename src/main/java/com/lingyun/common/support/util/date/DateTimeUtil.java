@@ -189,8 +189,9 @@ public class DateTimeUtil{
             try {
                 return new Date((new SimpleDateFormat(datePattern)).parse(strDateTime).getTime());
             } catch (ParseException e) {
-                throw new IllegalArgumentException(e);
+                 e.printStackTrace();
             }
+            return null;
         }
         public static Date getMonthEndTime(Calendar calendar) {
             Calendar tmpCalendar = (Calendar) calendar.clone();
