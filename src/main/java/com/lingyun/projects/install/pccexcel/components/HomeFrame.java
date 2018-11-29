@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class HomeFrame extends JFrame {
+public class HomeFrame extends BasicFrame {
 
     private JPanel excelParentPanel;
     private JPanel groupManagerPanel;
@@ -50,17 +50,7 @@ public class HomeFrame extends JFrame {
     }
 
     private void initFrame() {
-        setLayout(new BorderLayout(10, 10));
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
-        int screenWidth = screenSize.width;
-        int screenHeight = screenSize.height;
-        setSize(screenWidth / 2, screenHeight / 2);
-        setLocation(screenWidth / 4, screenHeight / 4);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("宁乡市政协excel工具");
-        setIconImage(new ImageIcon(ClassLoader.getSystemResource("images/icon/icon.png")).getImage());
-        setLocationByPlatform(true);
+
         add(this.excelParentPanel, BorderLayout.CENTER);
         this.titleTextField.setText("当前文件: "+(Constant.currentExcel==null?"没有选择excel文件":Constant.currentExcel.getPath()));
         this.excelParentPanel.add(this.excelDataPanel);

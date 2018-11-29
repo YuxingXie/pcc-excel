@@ -2,10 +2,12 @@ package com.lingyun.common.configs;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
+import com.lingyun.projects.install.pccexcel.components.PersonFrame;
 import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
+import com.lingyun.projects.install.pccexcel.domain.person.repo.PersonRepository;
 import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +35,10 @@ public class SwingComponentsConfig {
         groupManagerPanel.setBackground(Color.LIGHT_GRAY);
         return groupManagerPanel;
     }
-
+    @Bean
+    public PersonFrame personFrame(PersonRepository personRepository){
+        return new PersonFrame(personRepository);
+    }
 
     @Bean
     public JFileChooser excelFileChooser(ExcelRepository excelRepository){

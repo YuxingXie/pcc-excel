@@ -1,5 +1,7 @@
 package com.lingyun.projects.install.pccexcel.domain.person.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,7 +13,11 @@ public class Person {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @GeneratedValue(generator ="uuid")
     private String id;
-    private String groupName;
+
+    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(name = "personGroupId")
+//    @JsonIgnoreProperties(ignoreUnknown = true, value = {"personals","dealtAppeals"})
+    private PersonGroup personGroup;
     private String name;
     private Date createDate;
     @PrePersist
@@ -27,13 +33,7 @@ public class Person {
         this.id = id;
     }
 
-    public String getGroupName() {
-        return groupName;
-    }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
 
     public String getName() {
         return name;
@@ -49,5 +49,13 @@ public class Person {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public PersonGroup getPersonGroup() {
+        return personGroup;
+    }
+
+    public void setPersonGroup(PersonGroup personGroup) {
+        this.personGroup = personGroup;
     }
 }

@@ -2,6 +2,7 @@ package com.lingyun.projects.install.pccexcel.support;
 
 import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
+import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 
 import javax.swing.*;
@@ -39,12 +40,28 @@ public class ComponentsDrawTools {
         return jTabbedpane;
     }
 
-    public static Object[] getColumnNamesOfPersonGroups() {
-
-        return new Object[]{"分组id(只读)","分组名称","描述","创建日期(只读)"};
-
-
+    public static Object[] getColumnNamesOfPersons() {
+        return new Object[]{"id(只读)","姓名","创建日期(只读)","分组id(只读)","分组"};
     }
+    public static Object[][] getRowDataOfPersons(List<Person> persons) {
+
+        Object[] columnNames = getColumnNamesOfPersons();
+        Object[][] rowData = new Object[persons.size()][columnNames.length];
+        for (int i = 0; i < persons.size(); i++) {
+            Person person = persons.get(i);
+            PersonGroup personGroup=person.getPersonGroup();
+            rowData[i][0] = person.getId();
+            rowData[i][1] = person.getName();
+            rowData[i][2] = DateTimeUtil.DateRepresentation.toString(person.getCreateDate(), DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss);
+            rowData[i][3] = personGroup==null?null:personGroup.getGroupName();
+            rowData[i][4] = personGroup==null?null:personGroup.getId();
+        }
+        return rowData;
+    }
+        public static Object[] getColumnNamesOfPersonGroups() {
+        return new Object[]{"分组id(只读)","分组名称","描述","创建日期(只读)"};
+    }
+
     public static Object[][] getRowDataOfPersonGroups(List<PersonGroup> personGroups) {
 
         Object[] columnNames=getColumnNamesOfPersonGroups();
@@ -56,8 +73,6 @@ public class ComponentsDrawTools {
             rowData[i][2]=personGroup.getDescription();
             rowData[i][3]= DateTimeUtil.DateRepresentation.toString(personGroup.getCreateDate(),DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss);
         }
-
         return rowData;
-
     }
 }

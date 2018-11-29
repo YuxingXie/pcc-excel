@@ -2,6 +2,7 @@ package com.lingyun.common.configs;
 
 
 import com.lingyun.projects.install.pccexcel.components.HomeFrame;
+import com.lingyun.projects.install.pccexcel.components.PersonFrame;
 import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
@@ -74,9 +75,10 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
             personGroupRepository.save(personGroups);
         }
         HomeFrame appFrame = context.getBean(HomeFrame.class);
+        PersonFrame personFrame = context.getBean(PersonFrame.class);
 //        appFrame.pack();
-        appFrame.setVisible(true);
-
+//        appFrame.setVisible(true);
+        personFrame.setVisible(true);
     }
 
 }
