@@ -20,6 +20,7 @@ public class Person {
     private PersonGroup personGroup;
     private String name;
     private String description;
+    @Column(updatable = false)
     private Date createDate;
     @PrePersist
     void preInsert() {

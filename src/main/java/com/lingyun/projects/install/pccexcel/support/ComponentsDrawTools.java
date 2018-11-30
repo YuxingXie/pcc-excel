@@ -1,16 +1,85 @@
 package com.lingyun.projects.install.pccexcel.support;
 
+import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.date.DateTimeUtil;
+import com.lingyun.common.support.util.string.StringUtils;
+import com.lingyun.projects.install.pccexcel.components.PersonTable;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
+import com.lingyun.projects.install.pccexcel.domain.excel.entity.ExcelData;
 import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.SortedMap;
 
 public class ComponentsDrawTools {
+
+    public static JTabbedPane drawTabbedPaneOfExcelExportReview(List<ExcelData> excelDataList){
+        Map<String,List<ExcelData>> groupedExcelDataMap= excelDataListToMap(excelDataList);
+        JTabbedPane jTabbedPane=new JTabbedPane();
+        for (String sheetName:groupedExcelDataMap.keySet()){
+            List<ExcelData> mappedExcelDataList=groupedExcelDataMap.get(sheetName);
+
+            JPanel tabPanel=new JPanel(new BorderLayout());
+//            final Object[][] rowData=new Object[sheetData.size()][sheetData.get(0).size()];
+            final Object[][] rowData=generateRowDataForReview(mappedExcelDataList);
+            final Object[] columnNames=new Object[]{"排名","姓名","登录次数","浏览次数","点赞次数","评论次数","分享次数","总次数"};
+            JTable table = new JTable(rowData,columnNames);
+            JScrollPane jScrollPane=new JScrollPane(table);
+            tabPanel.add(jScrollPane,BorderLayout.CENTER);
+            jTabbedPane.addTab(sheetName+"排名",tabPanel);
+        }
+        return jTabbedPane;
+    }
+
+    private static Object[][] generateRowDataForReview(List<ExcelData> mappedExcelDataList) {
+        Object[][] rowData=new Object[mappedExcelDataList.size()][8];
+        int i=0;
+        for(ExcelData excelData:mappedExcelDataList){
+            rowData[i][0]=i+1;//排名
+            rowData[i][1]=excelData.getPerson().getName();
+            rowData[i][2]=excelData.getLoginCount();
+            rowData[i][3]=excelData.getViewCount();
+            rowData[i][4]=excelData.getPraiseCount();
+            rowData[i][5]=excelData.getCommentCount();
+            rowData[i][6]=excelData.getShareCount();
+            rowData[i][7]=excelData.getTotalCount();
+
+            i++;
+        }
+        return rowData;
+    }
+
+    private static Map<String, List<ExcelData>> excelDataListToMap(List<ExcelData> excelDataList) {
+
+        Map<String, List<ExcelData>> map=new HashMap<>();
+        List<String> groupNames=new ArrayList<>();
+        for(ExcelData excelData:excelDataList){
+            String groupName= getGroupName(excelData);
+            if (!groupNames.contains(groupName)){
+                groupNames.add(groupName);
+            }
+            List<ExcelData> excelDataListForGroupName=map.get(groupName);
+            if (excelDataListForGroupName==null) {
+                excelDataListForGroupName=new ArrayList<>();
+                map.put(groupName,excelDataListForGroupName);
+            }
+            excelDataListForGroupName.add(excelData);
+
+        }
+        return map;
+    }
+
+    private static String getGroupName(ExcelData excelData) {
+        String groupName="未分组";
+        if (excelData.getPerson()==null) return groupName;
+        if (excelData.getPerson().getPersonGroup()==null) return groupName;
+        if (StringUtils.isBlank(excelData.getPerson().getPersonGroup().getGroupName())) return groupName;
+        return excelData.getPerson().getPersonGroup().getGroupName();
+    }
+
     public static JTabbedPane drawTabbedPaneByExcel(Excel excel, JTabbedPane jTabbedpane) {
         jTabbedpane.removeAll();
         SortedMap<String, List<List<Object>>> result = excel.toSortedMap();
@@ -40,12 +109,10 @@ public class ComponentsDrawTools {
         return jTabbedpane;
     }
 
-    public static Object[] getColumnNamesOfPersons() {
-        return new Object[]{"id(只读)","姓名","创建日期(只读)","备注","分组id(只读)","分组"};
-    }
-    public static Object[][] getRowDataOfPersons(List<Person> persons) {
 
-        Object[] columnNames = getColumnNamesOfPersons();
+    public static Object[][] getRowDataOfPersonTable(List<Person> persons) {
+
+        Object[] columnNames = PersonTable.HEADER;
         Object[][] rowData = new Object[persons.size()][columnNames.length];
         for (int i = 0; i < persons.size(); i++) {
             Person person = persons.get(i);
@@ -75,5 +142,15 @@ public class ComponentsDrawTools {
             rowData[i][3]= DateTimeUtil.DateRepresentation.toString(personGroup.getCreateDate(),DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss);
         }
         return rowData;
+    }
+    public static String getGroupIdFromGroupName(String groupName,List<PersonGroup> personGroupList) {
+        if (StringUtils.isBlank(groupName)) return null;
+        if (BeanUtil.emptyCollection(personGroupList)) return null;
+        for(PersonGroup personGroup:personGroupList){
+            if (personGroup.getGroupName().trim().equals(groupName.trim())){
+                return personGroup.getId();
+            }
+        }
+        return null;
     }
 }

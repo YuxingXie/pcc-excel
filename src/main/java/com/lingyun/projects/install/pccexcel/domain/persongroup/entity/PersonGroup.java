@@ -2,10 +2,7 @@ package com.lingyun.projects.install.pccexcel.domain.persongroup.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -14,8 +11,10 @@ public class PersonGroup {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @GeneratedValue(generator ="uuid")
     private String id;
+    @Column(unique = true,nullable = false)
     private String groupName;
     private String description;
+    @Column(updatable = false)
     private Date createDate;
     @PrePersist
     void preInsert() {

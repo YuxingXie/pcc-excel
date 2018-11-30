@@ -20,6 +20,7 @@ public class Excel {
     private Date lastOpenDate;
     @Lob
     private byte[] dataJson;
+    @Column(updatable = false)
     private Date createDate;
     @PrePersist
     void preInsert() {

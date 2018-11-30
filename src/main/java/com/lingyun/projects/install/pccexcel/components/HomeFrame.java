@@ -6,6 +6,8 @@ import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
 import com.lingyun.common.support.util.string.StringUtils;
 import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
+import com.lingyun.projects.install.pccexcel.domain.excel.entity.ExcelData;
+import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
@@ -38,9 +40,10 @@ public class HomeFrame extends BasicFrame {
     private JScrollPane personGroupScrollPane;
     private List<PersonGroup> personGroups;
     @Resource private ExcelRepository excelRepository;
+    private ExcelDataRepository excelDataRepository;
     private PersonGroupRepository personGroupRepository;
-    public HomeFrame(JPanel excelParentPanel, JPanel groupManagerPanel, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,PersonGroupRepository personGroupRepository) {
-        injectComponents(excelParentPanel, groupManagerPanel, excelFileChooser, titleTextField, excelDataPanel, excelService, importExcelBtn,personGroupRepository);
+    public HomeFrame(JPanel excelParentPanel, JPanel groupManagerPanel, JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,PersonGroupRepository personGroupRepository,ExcelDataRepository excelDataRepository) {
+        injectComponents(excelParentPanel, groupManagerPanel, excelFileChooser, titleTextField, excelDataPanel, excelService, importExcelBtn,personGroupRepository,excelDataRepository);
         initFrame();
         addMenuBar();
         addBottomButtonGroup();
@@ -68,7 +71,7 @@ public class HomeFrame extends BasicFrame {
 //        this.personGroupScrollPane.getViewport().setBackground(Color.LIGHT_GRAY);
     }
 
-    private void injectComponents(JPanel excelParentPanel, JPanel groupManagerPanel,JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,PersonGroupRepository personGroupRepository) {
+    private void injectComponents(JPanel excelParentPanel, JPanel groupManagerPanel,JFileChooser excelFileChooser, JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService, JButton importExcelBtn,PersonGroupRepository personGroupRepository,ExcelDataRepository excelDataRepository) {
         this.excelParentPanel = excelParentPanel;
         this.groupManagerPanel =groupManagerPanel;
         this.excelFileChooser = excelFileChooser;
@@ -77,7 +80,8 @@ public class HomeFrame extends BasicFrame {
         this.excelService=excelService;
         this.importExcelBtn=importExcelBtn;
 
-        this.personGroupRepository=personGroupRepository;
+        this.personGroupRepository = personGroupRepository;
+        this.excelDataRepository = excelDataRepository;
     }
 
     private void redrawExcelDataPanel() {
@@ -263,7 +267,7 @@ public class HomeFrame extends BasicFrame {
             excel.setLastOpenDate(new Date());
             excel.setDataJson(json==null?null:json.getBytes(StandardCharsets.UTF_8));
             System.out.println(new String(excel.getDataJson(),StandardCharsets.UTF_8));
-            excel=excelRepository.save(excel);
+            excel=excelService.save(excel);
             Constant.currentExcel=excel;
             this.titleTextField.setText("当前文件: " +excel.getPath());
             redrawExcelDataPanel();
@@ -276,7 +280,7 @@ public class HomeFrame extends BasicFrame {
 
     private void addBottomButtonGroup() {
         JPanel buttonGroupPanel=new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton saveButton=new JButton("保存");
+        JButton saveButton=new JButton("检查");
         saveButton.addActionListener(e -> {
             JOptionPane.showConfirmDialog(HomeFrame.this.excelDataPanel,"当前没有excel文件，请先导入文件。","提示",JOptionPane.OK_OPTION);
 
@@ -290,7 +294,9 @@ public class HomeFrame extends BasicFrame {
                     openFileChooser(e);
                 }
             }else{
-
+                HomeFrame.this.excelParentPanel.setVisible(false);
+                JPanel excelGroupReviewPanel=new ExcelExportReviewPanel(HomeFrame.this.excelDataRepository);
+                HomeFrame.this.add(excelGroupReviewPanel);
             }
         });
         buttonGroupPanel.add(groupBtn);
