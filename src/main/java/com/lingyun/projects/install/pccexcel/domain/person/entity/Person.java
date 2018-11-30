@@ -19,6 +19,7 @@ public class Person {
 //    @JsonIgnoreProperties(ignoreUnknown = true, value = {"personals","dealtAppeals"})
     private PersonGroup personGroup;
     private String name;
+    private String description;
     private Date createDate;
     @PrePersist
     void preInsert() {
@@ -49,6 +50,14 @@ public class Person {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public PersonGroup getPersonGroup() {

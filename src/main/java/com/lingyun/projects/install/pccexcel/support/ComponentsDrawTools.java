@@ -41,7 +41,7 @@ public class ComponentsDrawTools {
     }
 
     public static Object[] getColumnNamesOfPersons() {
-        return new Object[]{"id(只读)","姓名","创建日期(只读)","分组id(只读)","分组"};
+        return new Object[]{"id(只读)","姓名","创建日期(只读)","备注","分组id(只读)","分组"};
     }
     public static Object[][] getRowDataOfPersons(List<Person> persons) {
 
@@ -53,8 +53,9 @@ public class ComponentsDrawTools {
             rowData[i][0] = person.getId();
             rowData[i][1] = person.getName();
             rowData[i][2] = DateTimeUtil.DateRepresentation.toString(person.getCreateDate(), DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss);
-            rowData[i][3] = personGroup==null?null:personGroup.getGroupName();
-            rowData[i][4] = personGroup==null?null:personGroup.getId();
+            rowData[i][3] = person.getDescription();
+            rowData[i][4] = personGroup==null?null:personGroup.getGroupName();
+            rowData[i][5] = personGroup==null?null:personGroup.getId();
         }
         return rowData;
     }

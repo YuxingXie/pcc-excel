@@ -40,6 +40,7 @@ public class PersonPanel extends JPanel{
         String str1[] = {"全部"};
         this.jComboBox=new JComboBox<>( str1);
         this.jComboBox.addItem("未分组");
+        this.jComboBox.addItem("同名");
         northPanel.add(this.jComboBox);
         add(northPanel,BorderLayout.NORTH);
 
