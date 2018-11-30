@@ -2,11 +2,11 @@ package com.lingyun.common.configs;
 
 
 import com.lingyun.projects.install.pccexcel.components.HomeFrame;
-import com.lingyun.projects.install.pccexcel.components.PersonFrame;
 import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
+import com.lingyun.projects.install.pccexcel.domain.person.repo.PersonRepository;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.repo.PersonGroupRepository;
 import org.slf4j.Logger;
@@ -46,11 +46,9 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     @Bean
-    public HomeFrame simpleFrame(JPanel excelParentPanel, JPanel groupManagerPanel, JFileChooser excelFileChooser,
-                                 JTextField titleTextField, JTabbedPane excelDataPanel, ExcelService excelService,
-                                 JButton importExcelBtn,
-                                 PersonGroupRepository personGroupRepository, ExcelDataRepository excelDataRepository) {
-        return new HomeFrame(excelParentPanel,groupManagerPanel, excelFileChooser,titleTextField,excelDataPanel,excelService, importExcelBtn,personGroupRepository,excelDataRepository);
+    public HomeFrame homeFrame(ExcelService excelService, PersonGroupRepository personGroupRepository,
+                               ExcelDataRepository excelDataRepository, PersonRepository personRepository) {
+        return new HomeFrame(excelService,personGroupRepository,excelDataRepository,personRepository);
     }
 
 
@@ -79,10 +77,8 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
             personGroupRepository.save(personGroups);
         }
         HomeFrame appFrame = context.getBean(HomeFrame.class);
-        PersonFrame personFrame = context.getBean(PersonFrame.class);
 //        appFrame.pack();
-//        appFrame.setVisible(true);
-        personFrame.setVisible(true);
+        appFrame.setVisible(true);
     }
 
 }
