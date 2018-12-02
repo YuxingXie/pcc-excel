@@ -1,9 +1,9 @@
 package com.lingyun.projects.install.pccexcel.components;
 
 import com.lingyun.common.support.util.date.DateTimeUtil;
+import com.lingyun.common.support.util.string.StringUtils;
 import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
-import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
@@ -16,14 +16,18 @@ public class PersonTableModel extends DefaultTableModel {
         this.persons=new ArrayList<>();//重建一个新的list，以便和表格保持同步，需要获得table中编辑过的数据时调用getPersons()
         for(int i=0;i<data.length;i++){
             Person person=new Person();
-            PersonGroup personGroup=new PersonGroup();
+            PersonGroup personGroup;
             if(data[i][0]!=null) person.setId(data[i][0].toString());
             if(data[i][1]!=null) person.setName(data[i][1].toString());
             if(data[i][2]!=null) person.setCreateDate(DateTimeUtil.DateConvert.convertStringToDateTime(DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss,data[i][2].toString()));
             if(data[i][3]!=null) person.setDescription(data[i][3].toString());
-            if(data[i][4]!=null) personGroup.setId(data[i][4].toString());//隐藏列PersonGroup.id
-            if(data[i][5]!=null) personGroup.setGroupName(data[i][5].toString());
-            person.setPersonGroup(personGroup);
+
+            if(data[i][4]!=null&&data[i][5]!=null) {
+                personGroup=new PersonGroup();
+                personGroup.setId(data[i][4].toString());
+                personGroup.setGroupName(data[i][5].toString());
+                person.setPersonGroup(personGroup);
+            }
             this.persons.add(person);
 
         }
@@ -34,15 +38,18 @@ public class PersonTableModel extends DefaultTableModel {
     public void addRow(Object[] data) {
         super.addRow(data);
         Person person=new Person();
-        PersonGroup personGroup=new PersonGroup();
+        PersonGroup personGroup = null;
         if(data[0]!=null) person.setId(data[0].toString());
         if(data[1]!=null) person.setName(data[1].toString());
         if(data[2]!=null) person.setCreateDate(DateTimeUtil.DateConvert.convertStringToDateTime(DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss,data[2].toString()));
         if(data[3]!=null) person.setDescription(data[3].toString());
-        if(data[4]!=null) personGroup.setId(data[4].toString());
-        if(data[5]!=null) personGroup.setGroupName(data[5].toString());
-        System.out.println("data[4]:"+data[4]);
-        person.setPersonGroup(personGroup);
+
+        if(data[4]!=null && data[5]!=null) {
+            personGroup=new PersonGroup();
+            personGroup.setId(data[4].toString());
+            personGroup.setGroupName(data[5].toString());
+        }
+        if (personGroup!=null) person.setPersonGroup(personGroup);
         this.persons.add(person);
     }
 
@@ -51,12 +58,11 @@ public class PersonTableModel extends DefaultTableModel {
         Object superObject =super.getValueAt(row,column);
         Object value;
         Person person=this.persons.get(row);
-//        PersonGroup personGroup=this.personGroups.get(row);
         if(person==null){
             person=new Person();
-
             this.persons.add(person);
         }
+
         if (column==0) {
             value = person.getId()==null?superObject:person.getId();
             if(person.getId()==null&&value!=null){
@@ -78,31 +84,29 @@ public class PersonTableModel extends DefaultTableModel {
                 person.setDescription(value.toString());
             }
         }else if (column==4) {
-            PersonGroup personGroup=person.getPersonGroup()==null?new PersonGroup():person.getPersonGroup();
-
-            value = personGroup.getId()==null?superObject:personGroup.getId();
-            if(personGroup.getId()==null&&value!=null){
-                personGroup.setId(value.toString());
-            }
-            person.setPersonGroup(personGroup);
-        }else if (column==5) {
-            PersonGroup personGroup=person.getPersonGroup()==null?new PersonGroup():person.getPersonGroup();
-
-            value = personGroup.getGroupName()==null?superObject:personGroup.getGroupName();
-            if(personGroup.getGroupName()==null&&value!=null){
-                personGroup.setGroupName(value.toString());
-            }
-            person.setPersonGroup(personGroup);
+            value = getWhatObject(superObject, person,"id");
+        } else if (column==5) {
+            value = getWhatObject(superObject, person,"groupName");
         }else {
             value= superObject;
         }
         return value;
     }
+    private Object getWhatObject(Object superObject, Person person, String propertyName) {
+//        System.out.println("column "+propertyName+" value:"+superObject);
+        if(superObject==null) return null;
+        PersonGroup personGroup=person.getPersonGroup();
 
-    @Override
-    public void setValueAt(Object aValue, int row, int column) {
-        super.setValueAt(aValue,row,column);
-        Person person=this.persons.get(row);
+        if(StringUtils.isNotBlank(superObject.toString())){
+            if(personGroup==null) personGroup = new PersonGroup();
+            setPropertyValue(propertyName,personGroup,superObject.toString());
+            person.setPersonGroup(personGroup);
+        }
+        return superObject;
+    }
+    private void setPropertyValue(String propertyName, PersonGroup personGroup, String value){
+        if(propertyName.equals("id"))  personGroup.setId(value);
+        else  personGroup.setGroupName(value);
     }
 
     @Override

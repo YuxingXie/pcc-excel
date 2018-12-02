@@ -1,11 +1,16 @@
 package com.lingyun.projects.install.pccexcel.domain.excel.entity;
 
+import com.lingyun.common.support.data.Excelable;
 import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
+
 @Entity
-public class ExcelData {
+public class ExcelData implements Excelable {
+    public static final String[] columnNames=new String[]{"排名","姓名","登录次数","浏览次数","点赞次数","评论次数","分享次数","总次数"};
     @Id
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @GeneratedValue(generator ="uuid")
@@ -133,5 +138,21 @@ public class ExcelData {
                 +(commentCount==null?0:commentCount)
                 +(praiseCount==null?0:praiseCount)
                 +(viewCount==null?0:viewCount);
+    }
+
+    @Override
+    public Map<String, Object> toExcelRow() {
+        Map<String, Object> map=new HashMap<>();
+//        {"排名","姓名","登录次数","浏览次数","点赞次数","评论次数","分享次数","总次数"};
+
+        map.put(columnNames[0],null);
+        map.put(columnNames[1],person.getName());
+        map.put(columnNames[2],loginCount);
+        map.put(columnNames[3],viewCount);
+        map.put(columnNames[4],praiseCount);
+        map.put(columnNames[5],commentCount);
+        map.put(columnNames[6],shareCount);
+        map.put(columnNames[7],getTotalCount());
+        return map;
     }
 }

@@ -100,7 +100,7 @@ public class ExcelPanel extends TopFramePanel{
             tabPanel.add(jScrollPane,BorderLayout.CENTER);
 
             this.excelDataPanel.addTab(sheetName,tabPanel);
-            this.excelDataPanel.repaint();
+            this.excelDataPanel.validate();
             this.excelDataPanel.repaint();
         }
     }
@@ -112,8 +112,8 @@ public class ExcelPanel extends TopFramePanel{
             openFileChooser(e);
         });
         buttonGroupPanel.add(importButton);
-        JButton groupBtn=new JButton("导出预览");
-        groupBtn.addActionListener(e -> {
+        JButton preview=new JButton("导出预览");
+        preview.addActionListener(e -> {
             if(Constant.currentExcel==null){
                 int selection=JOptionPane.showConfirmDialog(ExcelPanel.this.excelDataPanel,"当前没有excel文件，请先导入文件。","提示",JOptionPane.OK_OPTION);
                 if(selection==JOptionPane.OK_OPTION){
@@ -126,7 +126,7 @@ public class ExcelPanel extends TopFramePanel{
                 observer.navigateTo("excelExportReviewPanel");
             }
         });
-        buttonGroupPanel.add(groupBtn);
+        buttonGroupPanel.add(preview);
         buttonGroupPanel.add(new JButton("刷新"));
 
 
@@ -186,5 +186,10 @@ public class ExcelPanel extends TopFramePanel{
 //            this.revalidate();
 //            this.repaint();
         }
+    }
+
+    @Override
+    public void loadData() {
+        excelDataPanel();
     }
 }

@@ -14,9 +14,8 @@ public class Person {
     @GeneratedValue(generator ="uuid")
     private String id;
 
-    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @ManyToOne(cascade={CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JoinColumn(name = "personGroupId")
-//    @JsonIgnoreProperties(ignoreUnknown = true, value = {"personals","dealtAppeals"})
     private PersonGroup personGroup;
     private String name;
     private String description;

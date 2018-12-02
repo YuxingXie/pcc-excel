@@ -3,6 +3,7 @@ package com.lingyun.projects.install.pccexcel.support;
 import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.common.support.util.string.StringUtils;
+import com.lingyun.projects.install.pccexcel.components.BasicTable;
 import com.lingyun.projects.install.pccexcel.components.PersonTable;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.ExcelData;
@@ -10,6 +11,8 @@ import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -19,19 +22,28 @@ public class ComponentsDrawTools {
     public static JTabbedPane drawTabbedPaneOfExcelExportReview(List<ExcelData> excelDataList){
         Map<String,List<ExcelData>> groupedExcelDataMap= excelDataListToMap(excelDataList);
         JTabbedPane jTabbedPane=new JTabbedPane();
+        final Object[] columnNames=new Object[]{"排名","姓名","登录次数","浏览次数","点赞次数","评论次数","分享次数","总次数"};
         for (String sheetName:groupedExcelDataMap.keySet()){
-            List<ExcelData> mappedExcelDataList=groupedExcelDataMap.get(sheetName);
-
+            final Object[][] rowData = getRowDataOfSheet(groupedExcelDataMap, sheetName);
             JPanel tabPanel=new JPanel(new BorderLayout());
-//            final Object[][] rowData=new Object[sheetData.size()][sheetData.get(0).size()];
-            final Object[][] rowData=generateRowDataForReview(mappedExcelDataList);
-            final Object[] columnNames=new Object[]{"排名","姓名","登录次数","浏览次数","点赞次数","评论次数","分享次数","总次数"};
-            JTable table = new JTable(rowData,columnNames);
+            JTable table = new BasicTable(rowData,columnNames){
+
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
             JScrollPane jScrollPane=new JScrollPane(table);
             tabPanel.add(jScrollPane,BorderLayout.CENTER);
             jTabbedPane.addTab(sheetName+"排名",tabPanel);
         }
         return jTabbedPane;
+    }
+
+    private static Object[][] getRowDataOfSheet(Map<String, List<ExcelData>> groupedExcelDataMap, String sheetName) {
+        List<ExcelData> mappedExcelDataList=groupedExcelDataMap.get(sheetName);
+        return generateRowDataForReview(mappedExcelDataList);
     }
 
     private static Object[][] generateRowDataForReview(List<ExcelData> mappedExcelDataList) {
@@ -52,7 +64,7 @@ public class ComponentsDrawTools {
         return rowData;
     }
 
-    private static Map<String, List<ExcelData>> excelDataListToMap(List<ExcelData> excelDataList) {
+    public static Map<String, List<ExcelData>> excelDataListToMap(List<ExcelData> excelDataList) {
 
         Map<String, List<ExcelData>> map=new HashMap<>();
         List<String> groupNames=new ArrayList<>();
@@ -61,11 +73,9 @@ public class ComponentsDrawTools {
             if (!groupNames.contains(groupName)){
                 groupNames.add(groupName);
             }
-            List<ExcelData> excelDataListForGroupName=map.get(groupName);
-            if (excelDataListForGroupName==null) {
-                excelDataListForGroupName=new ArrayList<>();
-                map.put(groupName,excelDataListForGroupName);
-            }
+            List<ExcelData> excelDataListForGroupName = map.computeIfAbsent(groupName, k -> {
+                return new ArrayList<>();
+            });
             excelDataListForGroupName.add(excelData);
 
         }
@@ -92,8 +102,8 @@ public class ComponentsDrawTools {
             rowData[i][1] = person.getName();
             rowData[i][2] = DateTimeUtil.DateRepresentation.toString(person.getCreateDate(), DateTimeUtil.DateFormatString.yyyy_MM_ddHH$mm$ss);
             rowData[i][3] = person.getDescription();
-            rowData[i][4] = personGroup==null?null:personGroup.getGroupName();
-            rowData[i][5] = personGroup==null?null:personGroup.getId();
+            rowData[i][4] = personGroup==null?null:personGroup.getId();
+            rowData[i][5] = personGroup==null?null:personGroup.getGroupName();
         }
         return rowData;
     }

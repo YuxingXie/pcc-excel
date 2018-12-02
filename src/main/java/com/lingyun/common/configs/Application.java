@@ -52,9 +52,9 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext context=contextRefreshedEvent.getApplicationContext();
         ExcelRepository excelRepository=context.getBean(ExcelRepository.class);
-        Constant.currentExcel=excelRepository.findByLastOpenDateGreatest();
-        System.out.println("当前excel:"+Constant.currentExcel.getPath());
         PersonGroupRepository personGroupRepository=context.getBean(PersonGroupRepository.class);
+        Constant.currentExcel=excelRepository.findByLastOpenDateGreatest();
+        System.out.println("当前excel:"+(Constant.currentExcel==null?"无":Constant.currentExcel.getPath()));
         long count=personGroupRepository.count();
         if(count== 0){
             PersonGroup personGroup1=new PersonGroup();

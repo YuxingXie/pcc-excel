@@ -1,12 +1,14 @@
 package com.lingyun.projects.install.pccexcel.route;
 
+import com.lingyun.projects.install.pccexcel.components.TopFramePanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.SortedMap;
 
-public class JPanelRouter extends BasicRooter<JPanel>{
+public class JPanelRouter extends BasicRooter<TopFramePanel>{
 
     public void setContainer(Container container) {
         this.container = container;
@@ -18,8 +20,11 @@ public class JPanelRouter extends BasicRooter<JPanel>{
 
     private Container container;
     @Override
-    public void show(JPanel jPanel) {
+    public void show(TopFramePanel jPanel) {
+        jPanel.loadData();
         jPanel.setVisible(true);
+        jPanel.validate();
+        jPanel.repaint();
         if(container!=null){
             if (Arrays.asList(container.getComponents()).contains(jPanel)){
             }else {
@@ -29,7 +34,7 @@ public class JPanelRouter extends BasicRooter<JPanel>{
     }
 
     @Override
-    public void hide(JPanel jPanel) {
+    public void hide(TopFramePanel jPanel) {
         jPanel.setVisible(false);
         if(container!=null){
             if (Arrays.asList(container.getComponents()).contains(jPanel)){

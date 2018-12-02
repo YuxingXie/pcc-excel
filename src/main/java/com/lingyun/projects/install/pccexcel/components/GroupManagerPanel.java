@@ -22,15 +22,23 @@ public class GroupManagerPanel extends TopFramePanel {
     private PersonGroupRepository personGroupRepository;
     public GroupManagerPanel(PersonGroupRepository personGroupRepository) {
         this.setBackground(Color.LIGHT_GRAY);
-        this.personGroups =personGroupRepository.findAll();
         this.personGroupRepository=personGroupRepository;
+        initData();
+
+
+
+    }
+
+    private void initData() {
+
+        this.personGroups =personGroupRepository.findAll();
         this.personGroupTableModel=new PersonGroupTableModel(ComponentsDrawTools.getRowDataOfPersonGroups(this.personGroups),ComponentsDrawTools.getColumnNamesOfPersonGroups());
         this.personGroupTable=new BasicTable();
         this.personGroupTable.setModel(this.personGroupTableModel);
         this.personGroupScrollPane=new JScrollPane(this.personGroupTable);
-
         renderGroupManagerPanel();
     }
+
     //TODO:Many problems
     public void renderGroupManagerPanel() {
         System.out.println("渲染用户分组组件");
@@ -50,11 +58,6 @@ public class GroupManagerPanel extends TopFramePanel {
 
 
         if(!BeanUtil.emptyCollection(this.personGroups)) {
-//            updateTableModelByPersonGroupList();
-//            this.personGroupTable = new JTable(this.personGroupTableModel);
-
-//            this.personGroupTable.setModel(this.personGroupTableModel);
-//            this.personGroupTable.getColumnModel().getColumn(0).setCellEditor(null);
             personGroupButtonEventBinding(addBtn, deleteBtn, saveBtn);
         }
 
@@ -138,4 +141,10 @@ public class GroupManagerPanel extends TopFramePanel {
         });
     }
 
+    @Override
+    public void loadData() {
+        initData();
+        this.validate();
+        this.repaint();
+    }
 }

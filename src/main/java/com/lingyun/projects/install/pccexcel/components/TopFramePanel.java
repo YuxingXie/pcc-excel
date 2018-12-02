@@ -7,4 +7,5 @@ public abstract class TopFramePanel extends JPanel {
     public TopFramePanel() {
         setLayout(new BorderLayout());
     }
+    public abstract void loadData();
 }

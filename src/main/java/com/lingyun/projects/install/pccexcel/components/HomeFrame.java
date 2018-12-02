@@ -32,7 +32,7 @@ public class HomeFrame extends BasicFrame {
         this.personGroupRepository=personGroupRepository;
         this.excelService=excelService;
         this.personRepository=personRepository;
-        this.excelExportReviewPanel=new ExcelExportReviewPanel(this.excelDataRepository);
+        this.excelExportReviewPanel=new ExcelExportReviewPanel(this.excelDataRepository,excelService);
         personPanel=new PersonPanel(this.personRepository,this.personGroupRepository);
         groupManagerPanel=new GroupManagerPanel(this.personGroupRepository);
         this.excelPanel = new ExcelPanel(this.excelService,this.excelDataRepository,this.observer);

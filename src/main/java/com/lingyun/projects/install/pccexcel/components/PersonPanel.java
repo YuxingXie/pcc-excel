@@ -8,8 +8,6 @@ import com.lingyun.projects.install.pccexcel.domain.persongroup.repo.PersonGroup
 import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,47 +19,43 @@ public class PersonPanel extends TopFramePanel {
     private PersonRepository personRepository;
     private PersonGroupRepository personGroupRepository;
     private JComboBox<String> jComboBox;
-    private JButton addBtn=new JButton("添加人员");
-    private JButton deleteBtn=new JButton("删除选中");
-    private JButton saveBtn=new JButton("保存");
+    private JButton addBtn;
+    private JButton deleteBtn;
+    private JButton saveBtn;
     private java.util.List<Person> persons;
+    private java.util.List<PersonGroup> personGroupList;
     public PersonPanel(PersonRepository personRepository,PersonGroupRepository personGroupRepository) {
         this.personRepository=personRepository;
         this.personGroupRepository=personGroupRepository;
         initComponents();
     }
 
+
     private void initComponents() {
         this.persons=this.personRepository.findAll();
-        java.util.List<PersonGroup> personGroupList=this.personGroupRepository.findAll();
+        this.personGroupList=this.personGroupRepository.findAll();
         this.personTable = new PersonTable(personGroupList);
         model=new PersonTableModel(ComponentsDrawTools.getRowDataOfPersonTable(persons), PersonTable.HEADER);
-
         this.personTable.setModel(model);
-        TableColumnModel tcm = this.personTable.getColumnModel();
-        System.out.println("tcm.getColumnCount():"+tcm.getColumnCount());
-        TableColumn tc = tcm.getColumn(4) ;
-//        tcm.removeColumn(tc);
-        System.out.println("tcm.getColumnCount():"+tcm.getColumnCount());
         personScrollPane = new JScrollPane(this.personTable);
         add(personScrollPane,BorderLayout.CENTER);
-
         JPanel buttonGroupPanel=new JPanel(new FlowLayout(FlowLayout.CENTER));
+        addBtn=new JButton("添加人员");
+        deleteBtn=new JButton("删除选中");
+        saveBtn=new JButton("保存");
         buttonGroupPanel.add(this.addBtn);
         buttonGroupPanel.add(this.deleteBtn);
         buttonGroupPanel.add(this.saveBtn);
         add(buttonGroupPanel,BorderLayout.SOUTH);
         JPanel northPanel=new JPanel(new FlowLayout(FlowLayout.LEFT));
         northPanel.add(new JLabel("人员列表   |    筛选条件"));
-        String str1[] = {"全部"};
+        String str1[] = {"全部","同名","未分组","已分组"};
         this.jComboBox=new JComboBox<>( str1);
-        this.jComboBox.addItem("同名");
-        this.jComboBox.addItem("未分组");
-        this.jComboBox.addItem("已分组");
         northPanel.add(this.jComboBox);
         add(northPanel,BorderLayout.NORTH);
         buttonsActionBinding();
     }
+
     private void buttonsActionBinding() {
         this.addBtn.addActionListener(new ActionListener() {
             @Override
@@ -78,7 +72,18 @@ public class PersonPanel extends TopFramePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(BeanUtil.javaToJson(PersonPanel.this.model.getPersons()));
+                personRepository.save(PersonPanel.this.model.getPersons());
+                JOptionPane.showMessageDialog(PersonPanel.this,"保存成功!","提示:",JOptionPane.INFORMATION_MESSAGE);
+                PersonPanel.this.loadData();
             }
         });
+    }
+
+    @Override
+    public void loadData() {
+        this.removeAll();
+        initComponents();
+        this.validate();
+        this.repaint();
     }
 }
