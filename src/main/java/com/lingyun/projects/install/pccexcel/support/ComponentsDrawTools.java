@@ -66,20 +66,35 @@ public class ComponentsDrawTools {
 
     public static Map<String, List<ExcelData>> excelDataListToMap(List<ExcelData> excelDataList) {
 
-        Map<String, List<ExcelData>> map=new HashMap<>();
+        Map<String, List<ExcelData>> groupedMap=new HashMap<>();
         List<String> groupNames=new ArrayList<>();
         for(ExcelData excelData:excelDataList){
             String groupName= getGroupName(excelData);
             if (!groupNames.contains(groupName)){
                 groupNames.add(groupName);
             }
-            List<ExcelData> excelDataListForGroupName = map.computeIfAbsent(groupName, k -> {
-                return new ArrayList<>();
-            });
+            List<ExcelData> excelDataListForGroupName = groupedMap.computeIfAbsent(groupName, k -> new ArrayList<>());
             excelDataListForGroupName.add(excelData);
-
         }
-        return map;
+        //需要排序
+        Map<String, List<ExcelData>> sortedMap=new HashMap<>();
+        for(String key:groupedMap.keySet()){
+            List<ExcelData> excelDatas=groupedMap.get(key);
+            List<ExcelData> sortedExcelDatas=sortListByTotalCount(excelDatas);
+            sortedMap.put(key,sortedExcelDatas);
+        }
+        return sortedMap;
+    }
+
+    private static List<ExcelData> sortListByTotalCount(List<ExcelData> excelDatas) {
+        Collections.sort(excelDatas, new Comparator<ExcelData>() {
+            @Override
+            public int compare(ExcelData o1, ExcelData o2) {
+                return o2.getTotalCount()-o1.getTotalCount();
+            }
+        });
+        return excelDatas;
+
     }
 
     private static String getGroupName(ExcelData excelData) {

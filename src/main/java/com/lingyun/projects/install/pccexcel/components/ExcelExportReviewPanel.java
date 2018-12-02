@@ -37,6 +37,7 @@ public class ExcelExportReviewPanel extends TopFramePanel{
 
     private void initDataAndComponents() {
         List<ExcelData> excelDataList=this.excelDataRepository.findByExcel(Constant.currentExcel);
+//        List<ExcelData> excelDataList=this.excelDataRepository.findExcelDataListOrderByTotalCount(Constant.currentExcel);
         excelDataTabbedPanel= ComponentsDrawTools.drawTabbedPaneOfExcelExportReview(excelDataList);
         JPanel southPanel=new JPanel(new FlowLayout(FlowLayout.CENTER));
         exportBtn=new JButton("导出");
@@ -67,8 +68,10 @@ public class ExcelExportReviewPanel extends TopFramePanel{
                 try {
                     in=resource.getInputStream();
                     XLSExcelUtils.exportExcelFromInputStream(in,exportFile,data,columnNames,0,0,true);
+                    JOptionPane.showMessageDialog(ExcelExportReviewPanel.this,"文件“"+exportFile+"”导出成功!");
                 } catch (IOException e1) {
                     e1.printStackTrace();
+                    JOptionPane.showMessageDialog(ExcelExportReviewPanel.this,"程序异常!","警告:",JOptionPane.WARNING_MESSAGE);
                 }finally {
                     if (null != in) {
                         try {

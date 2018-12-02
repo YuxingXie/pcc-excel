@@ -35,6 +35,7 @@ public class ExcelData implements Excelable {
     private Integer shareCount;//分享
     @Transient
     private Integer totalCount;
+
     public String getId() {
         return id;
     }
@@ -138,6 +139,11 @@ public class ExcelData implements Excelable {
                 +(commentCount==null?0:commentCount)
                 +(praiseCount==null?0:praiseCount)
                 +(viewCount==null?0:viewCount);
+    }
+
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
     }
 
     @Override
