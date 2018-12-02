@@ -5,5 +5,5 @@ import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import java.io.File;
 
 public class Constant {
-    public static Excel currentExcel;
+    public static Excel currentExcel=null;
 }

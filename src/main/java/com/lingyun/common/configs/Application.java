@@ -57,7 +57,7 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
         ApplicationContext context=contextRefreshedEvent.getApplicationContext();
         ExcelRepository excelRepository=context.getBean(ExcelRepository.class);
         Constant.currentExcel=excelRepository.findByLastOpenDateGreatest();
-
+        System.out.println("当前excel:"+Constant.currentExcel.getPath());
         PersonGroupRepository personGroupRepository=context.getBean(PersonGroupRepository.class);
         long count=personGroupRepository.count();
         if(count== 0){

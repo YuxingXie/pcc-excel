@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PersonPanel extends BasicPanel{
+public class PersonPanel extends TopFramePanel {
     private JScrollPane personScrollPane;
     private JTable personTable;
     private PersonTableModel model;
@@ -31,27 +31,7 @@ public class PersonPanel extends BasicPanel{
         initComponents();
     }
 
-    private void buttonsActionBinding() {
-        this.addBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PersonPanel.this.model.addRow(new Object[PersonTable.HEADER.length]);
-                /**
-                 *      返回底部
-                 */
-                Rectangle rect = PersonPanel.this.personTable.getCellRect(PersonPanel.this.personTable.getRowCount() -1, 0, true);
-                PersonPanel.this.personTable.scrollRectToVisible(rect);
-            }
-        });
-        this.saveBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println(BeanUtil.javaToJson(PersonPanel.this.model.getPersons()));
-            }
-        });
-    }
-
-    protected void initComponents() {
+    private void initComponents() {
         this.persons=this.personRepository.findAll();
         java.util.List<PersonGroup> personGroupList=this.personGroupRepository.findAll();
         this.personTable = new PersonTable(personGroupList);
@@ -81,5 +61,24 @@ public class PersonPanel extends BasicPanel{
         northPanel.add(this.jComboBox);
         add(northPanel,BorderLayout.NORTH);
         buttonsActionBinding();
+    }
+    private void buttonsActionBinding() {
+        this.addBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PersonPanel.this.model.addRow(new Object[PersonTable.HEADER.length]);
+                /**
+                 *      返回底部
+                 */
+                Rectangle rect = PersonPanel.this.personTable.getCellRect(PersonPanel.this.personTable.getRowCount() -1, 0, true);
+                PersonPanel.this.personTable.scrollRectToVisible(rect);
+            }
+        });
+        this.saveBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(BeanUtil.javaToJson(PersonPanel.this.model.getPersons()));
+            }
+        });
     }
 }

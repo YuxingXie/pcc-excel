@@ -48,7 +48,7 @@ public class OLE2OfficeExcelUtils {
             HSSFSheet sheet = wb.getSheetAt(sheetIndex);
             int lastRowNumber=sheet.getLastRowNum();
             List<List<Object>> sheetData=new ArrayList<>();
-            for (int rowIndex = 0; rowIndex < lastRowNumber; rowIndex++) {
+            for (int rowIndex = 0; rowIndex <= lastRowNumber; rowIndex++) {
                 List<Object> rowData=handleRowOfSheet(sheet, rowIndex);
                 sheetData.add(rowData);
             }
