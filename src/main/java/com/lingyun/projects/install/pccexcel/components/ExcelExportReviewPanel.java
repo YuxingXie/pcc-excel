@@ -9,7 +9,7 @@ import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 import javax.swing.*;
 import java.util.List;
 
-public class ExcelExportReviewPanel extends JPanel{
+public class ExcelExportReviewPanel extends TopFramePanel{
     private JTabbedPane excelDataTabbedPanel;
     ExcelDataRepository excelDataRepository;
     public ExcelExportReviewPanel(ExcelDataRepository excelDataRepository) {

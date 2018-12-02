@@ -26,12 +26,13 @@ public class RouterTest  {
         frame.setJMenuBar(menuBar);
 
 
-        Publisher<JFrame> publisher=new Publisher<>(frame);
+        Publisher publisher=new Publisher();
         Observable  source$=new Observable(publisher);
-        JPanelRouter observer= new JPanelRouter(frame);
+        JPanelRouter observer= new JPanelRouter();
+        observer.setContainer(frame);
         observer.addRouterPoint("p1",routerPanel1);
         observer.addRouterPoint("p2",routerPanel2);
-        source$.onSubsribe(observer);
+        source$.onSubscribe(observer);
 
         forward.addActionListener(e -> observer.forward());
         back.addActionListener(e -> observer.back());

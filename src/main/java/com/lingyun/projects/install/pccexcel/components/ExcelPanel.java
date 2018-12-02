@@ -11,6 +11,7 @@ import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.repo.PersonGroupRepository;
+import com.lingyun.projects.install.pccexcel.route.JPanelRouter;
 import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 
 import javax.swing.*;
@@ -34,17 +35,13 @@ public class ExcelPanel extends TopFramePanel{
     private JTabbedPane excelDataPanel;
     private ExcelService excelService;
 
-
-
-
-
     private ExcelRepository excelRepository;
-    private PersonGroupRepository personGroupRepository;
     private ExcelDataRepository excelDataRepository;
-    public ExcelPanel(ExcelService excelService,PersonGroupRepository personGroupRepository,ExcelDataRepository excelDataRepository) {
+    private JPanelRouter observer;
+    public ExcelPanel(ExcelService excelService, ExcelDataRepository excelDataRepository, JPanelRouter observer) {
         super();
+        this.observer=observer;
         this.excelService=excelService;
-        this.personGroupRepository = personGroupRepository;
         this.excelDataRepository = excelDataRepository;
         initComponents();
         addBottomButtonGroup();
@@ -94,8 +91,9 @@ public class ExcelPanel extends TopFramePanel{
                 }
             }
             JTable table = new JTable(rowData,columnNames){
-                public TableCellEditor getCellEditor() {
-                    return null;
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
                 }
             };
             JScrollPane jScrollPane=new JScrollPane(table);
@@ -107,33 +105,25 @@ public class ExcelPanel extends TopFramePanel{
         }
     }
 
-
-
-
-
-
-
-
-
     private void addBottomButtonGroup() {
         JPanel buttonGroupPanel=new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton saveButton=new JButton("检查");
-        saveButton.addActionListener(e -> {
-            JOptionPane.showConfirmDialog(ExcelPanel.this.excelDataPanel,"当前没有excel文件，请先导入文件。","提示",JOptionPane.OK_OPTION);
-
+        JButton importButton=new JButton("导入excel");
+        importButton.addActionListener(e -> {
+            openFileChooser(e);
         });
-        buttonGroupPanel.add(saveButton);
-        JButton groupBtn=new JButton("分组预览");
+        buttonGroupPanel.add(importButton);
+        JButton groupBtn=new JButton("导出预览");
         groupBtn.addActionListener(e -> {
             if(Constant.currentExcel==null){
                 int selection=JOptionPane.showConfirmDialog(ExcelPanel.this.excelDataPanel,"当前没有excel文件，请先导入文件。","提示",JOptionPane.OK_OPTION);
                 if(selection==JOptionPane.OK_OPTION){
-                    openFileChooser(e,null);
+                    openFileChooser(e);
                 }
             }else{
-                ExcelPanel.this.setVisible(false);
-                JPanel excelGroupReviewPanel=new ExcelExportReviewPanel(ExcelPanel.this.excelDataRepository);
-                ExcelPanel.this.add(excelGroupReviewPanel);
+//                ExcelPanel.this.setVisible(false);
+//                JPanel excelGroupReviewPanel=new ExcelExportReviewPanel(ExcelPanel.this.excelDataRepository);
+//                ExcelPanel.this.add(excelGroupReviewPanel);
+                observer.navigateTo("excelExportReviewPanel");
             }
         });
         buttonGroupPanel.add(groupBtn);
@@ -156,7 +146,7 @@ public class ExcelPanel extends TopFramePanel{
             tabPanel.add(label);
             JButton importExcelBtn=new JButton("导入excel...");
             importExcelBtn.addActionListener(e -> {
-                openFileChooser(e,null);
+                openFileChooser(e);
             });
             tabPanel.add(importExcelBtn);
             this.excelDataPanel.addTab("没有选择文件",tabPanel);
@@ -167,12 +157,11 @@ public class ExcelPanel extends TopFramePanel{
         }
 
     }
-    public void openFileChooser(ActionEvent e,JComponent componentToHide) {
+    public void openFileChooser(ActionEvent e) {
         System.out.println("e.getSource():"+e.getSource());
         this.add(this.excelFileChooser, BorderLayout.CENTER);
         int result = this.excelFileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
-            if(componentToHide!=null) componentToHide.setVisible(false);
             this.setVisible(true);
             File file = this.excelFileChooser.getSelectedFile();
             Excel excel = this.excelService.findByFilePath(file.getAbsolutePath());

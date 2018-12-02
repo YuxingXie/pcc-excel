@@ -7,9 +7,15 @@ import java.util.Map;
 import java.util.SortedMap;
 
 public class JPanelRouter extends BasicRooter<JPanel>{
-    public JPanelRouter(Container container) {
-        this.container=container;
+
+    public void setContainer(Container container) {
+        this.container = container;
     }
+
+    public Container getContainer() {
+        return container;
+    }
+
     private Container container;
     @Override
     public void show(JPanel jPanel) {

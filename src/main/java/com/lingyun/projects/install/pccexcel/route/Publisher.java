@@ -1,11 +1,6 @@
 package com.lingyun.projects.install.pccexcel.route;
 
-public class Publisher<T> {//被观察者,或称发布者,
-    private T component;
-
-    public Publisher(T component) {
-        this.component = component;
-    }
+public class Publisher {//被观察者,或称发布者,
 
     public void navigateTo(Router observer){
             observer.navigateTo(null);
@@ -17,7 +12,4 @@ public class Publisher<T> {//被观察者,或称发布者,
         observer.forward();
     }
 
-    public T getComponent() {
-        return component;
-    }
 }

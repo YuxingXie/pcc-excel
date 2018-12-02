@@ -13,31 +13,38 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HomeFrame extends BasicFrame {
-
+    private JPanelRouter observer;
     private ExcelPanel excelPanel;
     private PersonPanel personPanel;
+    private ExcelExportReviewPanel excelExportReviewPanel;
     private GroupManagerPanel groupManagerPanel;
     private JMenuBar menuBar;
     private ExcelDataRepository excelDataRepository;
     private PersonGroupRepository personGroupRepository;
     private ExcelService excelService;
     private PersonRepository personRepository;
-    public HomeFrame(ExcelService excelService,
+    public HomeFrame(JPanelRouter observer,ExcelService excelService,
                      PersonGroupRepository personGroupRepository,
                      ExcelDataRepository excelDataRepository,
                      PersonRepository personRepository) {
+        this.observer = observer;
         this.excelDataRepository=excelDataRepository;
         this.personGroupRepository=personGroupRepository;
         this.excelService=excelService;
         this.personRepository=personRepository;
+        this.excelExportReviewPanel=new ExcelExportReviewPanel(this.excelDataRepository);
         personPanel=new PersonPanel(this.personRepository,this.personGroupRepository);
         groupManagerPanel=new GroupManagerPanel(this.personGroupRepository);
-        this.excelPanel = new ExcelPanel(this.excelService,this.personGroupRepository,this.excelDataRepository);
+        this.excelPanel = new ExcelPanel(this.excelService,this.excelDataRepository,this.observer);
         add(this.excelPanel, BorderLayout.CENTER);
         this.menuBar = new JMenuBar();
         setJMenuBar(this.menuBar);
         addMenuBarItems();
-
+        this.observer.setContainer(this);
+        this.observer.addRouterPoint("excelPanel",this.excelPanel);
+        this.observer.addRouterPoint("personPanel",this.personPanel);
+        this.observer.addRouterPoint("groupManagerPanel",this.groupManagerPanel);
+        this.observer.addRouterPoint("excelExportReviewPanel",this.excelExportReviewPanel);
 
     }
     private void showPersonPanel(){
@@ -51,16 +58,10 @@ public class HomeFrame extends BasicFrame {
         add(this.excelPanel,BorderLayout.CENTER);
     }
     private void addMenuBarItems() {
-        Publisher<JFrame> publisher=new Publisher<>(this);
-        Observable source$=new Observable(publisher);
-        JPanelRouter observer= new JPanelRouter(this);
-        observer.addRouterPoint("excelPanel",this.excelPanel);
-        observer.addRouterPoint("personPanel",this.personPanel);
-        observer.addRouterPoint("groupManagerPanel",this.groupManagerPanel);
-        source$.onSubsribe(observer);
+
         JMenu menuFile = new JMenu("文件");
         menuBar.add(menuFile);
-        JMenuItem menuItem1 = new JMenuItem("导入excel");
+        JMenuItem menuItem1 = new JMenuItem("当前excel");
         JMenuItem menuItem2 = new JMenuItem("最近打开...");
         JMenuItem menuItem3 = new JMenuItem("退出");
 

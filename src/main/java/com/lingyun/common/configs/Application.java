@@ -45,11 +45,7 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
 
     }
 
-    @Bean
-    public HomeFrame homeFrame(ExcelService excelService, PersonGroupRepository personGroupRepository,
-                               ExcelDataRepository excelDataRepository, PersonRepository personRepository) {
-        return new HomeFrame(excelService,personGroupRepository,excelDataRepository,personRepository);
-    }
+
 
 
     @Override

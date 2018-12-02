@@ -75,7 +75,7 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
 }
-bootRun {
-//开启页面热加载功能,bootRun必须在文件结尾
-    addResources = true
-}
+//bootRun {
+////开启页面热加载功能,bootRun必须在文件结尾
+//    addResources = true
+//}

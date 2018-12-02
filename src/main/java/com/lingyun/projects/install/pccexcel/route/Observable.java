@@ -6,7 +6,7 @@ public class Observable {
     public Observable(Publisher publisher) {
         this.publisher = publisher;
     }
-    public void onSubsribe(Router observer) {
+    public void onSubscribe(Router observer) {
         this.publisher.navigateTo(observer);
     }
     public void onBack(Router observer) {
