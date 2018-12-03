@@ -1,10 +1,10 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.panels;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class TopFramePanel extends JPanel {
-    public TopFramePanel() {
+public abstract class TopComponent extends JComponent {
+    public TopComponent() {
         setLayout(new BorderLayout());
     }
     public abstract void loadData();

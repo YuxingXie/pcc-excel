@@ -1,8 +1,6 @@
 package com.lingyun.projects.install.pccexcel.route;
 
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 观察者实现类
@@ -19,14 +17,14 @@ public abstract class BasicRooter<T> implements Router {
         for(String routerPointName: routerPointMap.keySet()){
             if(to.equals(routerPointName)){
                 this.current=i;
-                System.out.println("to :"+to+",index:"+this.current);
+//                System.out.println("to :"+to+",index:"+this.current);
                 renderView();
                 return;
             }
             i++;
         }
         this.current=0;
-        System.out.println("to :"+to+",index:"+this.current);
+
         renderView();
     }
 
@@ -42,7 +40,7 @@ public abstract class BasicRooter<T> implements Router {
     public void forward() {
         this.current++;
         if (this.current==this.routerPointMap.size()) this.current=0;
-        System.out.println("forward to "+this.current);
+//        System.out.println("forward to "+this.current);
         renderView();
     }
 
@@ -55,7 +53,7 @@ public abstract class BasicRooter<T> implements Router {
             }
             i++;
         }
-        System.out.println("current component name:"+routerPointMap.firstKey());
+//        System.out.println("current component name:"+routerPointMap.firstKey());
         return routerPointMap.get(routerPointMap.firstKey());
     }
     public void addRouterPoint(String name,T routerPoint){
@@ -78,4 +76,5 @@ public abstract class BasicRooter<T> implements Router {
     public SortedMap<String, T> getRouterPointMap() {
         return routerPointMap;
     }
+
 }

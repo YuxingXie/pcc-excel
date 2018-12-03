@@ -1,4 +1,4 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.basic;
 
 import javax.swing.*;
 import java.awt.*;

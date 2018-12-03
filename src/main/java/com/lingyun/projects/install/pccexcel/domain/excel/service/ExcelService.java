@@ -95,4 +95,14 @@ public class ExcelService {
         saveExcelData(excel);
         return excel;
     }
+
+    public List<Excel> finAll() {
+        return excelRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(Excel excel) {
+        excelDataRepository.deleteAllByExcel(excel);
+        excelRepository.delete(excel);
+    }
 }

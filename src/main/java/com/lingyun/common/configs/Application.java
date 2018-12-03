@@ -1,12 +1,9 @@
 package com.lingyun.common.configs;
 
 
-import com.lingyun.projects.install.pccexcel.components.HomeFrame;
+import com.lingyun.projects.install.pccexcel.components.frames.HomeFrame;
 import com.lingyun.projects.install.pccexcel.config.Constant;
-import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
-import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
-import com.lingyun.projects.install.pccexcel.domain.person.repo.PersonRepository;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.repo.PersonGroupRepository;
 import org.slf4j.Logger;
@@ -17,11 +14,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 

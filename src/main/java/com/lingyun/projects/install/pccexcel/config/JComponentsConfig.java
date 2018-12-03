@@ -1,6 +1,7 @@
 package com.lingyun.projects.install.pccexcel.config;
 
-import com.lingyun.projects.install.pccexcel.components.HomeFrame;
+import com.lingyun.projects.install.pccexcel.components.frames.HomeFrame;
+import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
 import com.lingyun.projects.install.pccexcel.domain.person.repo.PersonRepository;
@@ -15,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 public class JComponentsConfig {
     @Bean
     public HomeFrame homeFrame(JPanelRouter observer,ExcelService excelService, PersonGroupRepository personGroupRepository,
-                               ExcelDataRepository excelDataRepository, PersonRepository personRepository) {
-        return new HomeFrame(observer,excelService,personGroupRepository,excelDataRepository,personRepository);
+                               ExcelDataRepository excelDataRepository, PersonRepository personRepository,Excel excel) {
+        return new HomeFrame(observer,excelService,personGroupRepository,excelDataRepository,personRepository,excel);
     }
     @Bean
     public JPanelRouter observer(){
@@ -26,5 +27,12 @@ public class JComponentsConfig {
 
         source$.onSubscribe(observer);
         return observer;
+    }
+
+    @Bean
+    public Excel excel(ExcelService excelService){
+        Excel excel= excelService.findByLastOpenDateGreatest();
+        Constant.currentExcel=excel;
+        return excel;
     }
 }

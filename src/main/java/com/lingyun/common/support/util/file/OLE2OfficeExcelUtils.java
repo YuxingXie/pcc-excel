@@ -2,12 +2,15 @@ package com.lingyun.common.support.util.file;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.apache.poi.ss.usermodel.CellType.*;
 
 public class OLE2OfficeExcelUtils {
 
@@ -89,11 +92,12 @@ public class OLE2OfficeExcelUtils {
 
     private static Object getCellValue(HSSFCell cell) {
         Object cellValue="";
-        switch (cell.getCellType()) {
-            case HSSFCell.CELL_TYPE_STRING:
+        CellType cellType=cell.getCellTypeEnum();
+        switch (cellType) {
+            case STRING:
                 cellValue = cell.getStringCellValue();
                 break;
-            case HSSFCell.CELL_TYPE_NUMERIC:
+            case NUMERIC:
                 if (HSSFDateUtil.isCellDateFormatted(cell)) {
                     Date date = cell.getDateCellValue();
                     if (date != null) {
@@ -105,23 +109,23 @@ public class OLE2OfficeExcelUtils {
                     cellValue = new DecimalFormat("0").format(cell.getNumericCellValue());
                 }
                 break;
-            case HSSFCell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 // 导入时如果为公式生成的数据则无值
 //                                if (!cell.getStringCellValue().equals("")) {
-                cell.setCellType(CellType.STRING);
+                cell.setCellType(STRING);
                 if (!cell.getStringCellValue().equals("")) {
                     cellValue = cell.getStringCellValue();
                 } else {
-                    cell.setCellType(CellType.NUMERIC);
+                    cell.setCellType(NUMERIC);
                     cellValue = cell.getNumericCellValue() + "";
                 }
                 break;
-            case HSSFCell.CELL_TYPE_BLANK:
+            case BLANK:
                 break;
-            case HSSFCell.CELL_TYPE_ERROR:
+            case ERROR:
                 cellValue = "";
                 break;
-            case HSSFCell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 cellValue = (cell.getBooleanCellValue()  ? "Y"
                         : "N");
                 break;

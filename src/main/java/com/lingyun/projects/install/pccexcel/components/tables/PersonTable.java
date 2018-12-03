@@ -1,16 +1,14 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.tables;
 
-import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.string.StringUtils;
+import com.lingyun.projects.install.pccexcel.components.basic.BasicTable;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
 import java.util.List;
 import java.util.Vector;
 

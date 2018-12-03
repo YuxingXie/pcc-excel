@@ -1,6 +1,7 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.panels;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
+import com.lingyun.projects.install.pccexcel.components.tables.PersonTable;
 import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import com.lingyun.projects.install.pccexcel.domain.person.repo.PersonRepository;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
@@ -12,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PersonPanel extends TopFramePanel {
+public class PersonPanel extends TopComponent {
     private JScrollPane personScrollPane;
     private JTable personTable;
     private PersonTableModel model;
@@ -75,7 +76,7 @@ public class PersonPanel extends TopFramePanel {
                 System.out.println(BeanUtil.javaToJson(PersonPanel.this.model.getPersons()));
                 personRepository.save(PersonPanel.this.model.getPersons());
                 JOptionPane.showMessageDialog(PersonPanel.this,"保存成功!","提示:",JOptionPane.INFORMATION_MESSAGE);
-                PersonPanel.this.loadData();
+                PersonPanel.this.reload();
             }
         });
     }

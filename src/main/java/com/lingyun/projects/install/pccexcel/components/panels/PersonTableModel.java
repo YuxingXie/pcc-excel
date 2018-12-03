@@ -1,4 +1,4 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.panels;
 
 import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.common.support.util.string.StringUtils;

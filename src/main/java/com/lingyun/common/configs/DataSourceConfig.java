@@ -19,7 +19,7 @@ public class DataSourceConfig {
 //        ds.setPassword("lingyun");
 //        return ds;
 //    }
-    @Profile({"xyximac","xyxmac","xyxwin","site,smzjwin"})
+    @Profile({"xyximac","xyxmac","xyxwin","site,smzjwin","prod"})
     @Bean
     public DataSource dataSourceH2_02() {
         DriverManagerDataSource ds=new DriverManagerDataSource();
@@ -39,15 +39,15 @@ public class DataSourceConfig {
         ds.setPassword("123456");
         return ds;
     }
-
-    @Profile("prod")
-    @Bean
-    public DataSource dataSourceMysql() {
-        DriverManagerDataSource ds=new DriverManagerDataSource();
-        ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://10.96.51.81:3306/zhnx?useUnicode=true&characterEncoding=UTF-8");
-        ds.setUsername("root");
-        ds.setPassword("123456");
-        return ds;
-    }
+//
+//    @Profile("prod")
+//    @Bean
+//    public DataSource dataSourceMysql() {
+//        DriverManagerDataSource ds=new DriverManagerDataSource();
+//        ds.setDriverClassName("com.mysql.jdbc.Driver");
+//        ds.setUrl("jdbc:mysql://10.96.51.81:3306/zhnx?useUnicode=true&characterEncoding=UTF-8");
+//        ds.setUsername("root");
+//        ds.setPassword("123456");
+//        return ds;
+//    }
 }

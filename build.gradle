@@ -50,30 +50,31 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
     compile group: 'org.apache.poi', name: 'poi', version: '3.17'
-//    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.11'
+
+    
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
     compile group: 'org.apache.poi', name: 'poi-scratchpad', version: '3.17'
     compile group: 'org.apache.poi', name: 'poi-ooxml-schemas', version: '3.17'
     
-    compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.6'
+//    compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.6'
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
 //spring-batch-core不引入不会报错，但org.springframework.boot.autoconfigure.batch.BasicBatchConfigurer这个类其实是依赖这个包的
     compile group: 'org.springframework.batch', name: 'spring-batch-core'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     compile("org.springframework.boot:spring-boot-starter-actuator")
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
     compile group: 'com.h2database', name: 'h2', version: '1.4.196'
-//    compile group: 'com.thetransactioncompany', name: 'cors-filter', version: '2.5'
-//    compile group: 'net.sf.ezmorph', name: 'ezmorph', version: '1.0.6'
+
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     // 图片压缩jar
     compile group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
     compile group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
     compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    
     compile group: 'commons-codec', name: 'commons-codec', version: '1.4'
-    compile ("org.quartz-scheduler:quartz:2.3.0")
+    compile group: 'org.webjars', name: 'font-awesome', version: '5.5.0'
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
 }

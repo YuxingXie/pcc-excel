@@ -1,7 +1,7 @@
 package com.lingyun.projects.install.pccexcel.route;
 
-import com.lingyun.projects.install.pccexcel.components.BasicFrame;
-import com.lingyun.projects.install.pccexcel.components.TopFramePanel;
+import com.lingyun.projects.install.pccexcel.components.basic.BasicFrame;
+import com.lingyun.projects.install.pccexcel.components.panels.TopComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,13 +10,13 @@ public class RouterTest  {
     public static void main(String[] args){
         JFrame frame =new BasicFrame();
         frame.setVisible(true);
-        TopFramePanel routerPanel1=new TopFramePanel() {
+        TopComponent routerPanel1=new TopComponent() {
             @Override
             public void loadData() {
 
             }
         };
-        TopFramePanel routerPanel2= new TopFramePanel() {
+        TopComponent routerPanel2= new TopComponent() {
             @Override
             public void loadData() {
 

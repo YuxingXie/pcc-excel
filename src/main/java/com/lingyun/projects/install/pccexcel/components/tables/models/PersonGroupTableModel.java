@@ -1,4 +1,4 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.tables.models;
 
 import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;

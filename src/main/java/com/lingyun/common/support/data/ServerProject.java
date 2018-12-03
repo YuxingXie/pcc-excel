@@ -81,7 +81,7 @@ public class ServerProject extends AbstractProject{
 
     public void init(){
         assert StringUtils.isNotBlank(name);
-        makeUploadDirAndWorkingDir();
+//        makeUploadDirAndWorkingDir();
         makeHomeProject();
     }
 

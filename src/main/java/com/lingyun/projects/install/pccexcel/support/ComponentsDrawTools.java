@@ -2,23 +2,97 @@ package com.lingyun.projects.install.pccexcel.support;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.date.DateTimeUtil;
+import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
+import com.lingyun.common.support.util.file.XLSExcelUtils;
 import com.lingyun.common.support.util.string.StringUtils;
-import com.lingyun.projects.install.pccexcel.components.BasicTable;
-import com.lingyun.projects.install.pccexcel.components.PersonTable;
+import com.lingyun.projects.install.pccexcel.components.basic.BasicTable;
+import com.lingyun.projects.install.pccexcel.components.panels.ExcelExportReviewPanel;
+import com.lingyun.projects.install.pccexcel.components.tables.PersonTable;
+import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.ExcelData;
+import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
 import com.lingyun.projects.install.pccexcel.domain.person.entity.Person;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
 public class ComponentsDrawTools {
+    public static void expandTree(JTree tree) {
+        TreeNode root = (TreeNode) tree.getModel().getRoot();
+        expandAll(tree, new TreePath(root), true);
+    }
+    private static void expandAll(JTree tree, TreePath parent, boolean expand) {
+        // Traverse children
+        TreeNode node = (TreeNode) parent.getLastPathComponent();
+        if (node.getChildCount() >= 0) {
+            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
+                TreeNode n = (TreeNode) e.nextElement();
+                TreePath path = parent.pathByAddingChild(n);
+                expandAll(tree, path, expand);
+            }
+        }
 
+        // Expansion or collapse must be done bottom-up
+        if (expand) {
+            tree.expandPath(parent);
+        } else {
+            tree.collapsePath(parent);
+        }
+    }
+    public static int openFileChooser(ExcelService excelService, JComponent parent) {
+        String currentDir;
+        if(Constant.currentExcel!=null){
+            currentDir=Constant.currentExcel.getPath();
+        }else {
+            Constant.currentExcel=excelService.findByLastOpenDateGreatest();
+            currentDir=Constant.currentExcel==null?null:Constant.currentExcel.getPath();
+        }
+        JFileChooser excelFileChooser=new JFileChooser(currentDir);
+        FileFilter filter1 =new FileNameExtensionFilter("microsoft excel files","xls","xlsx","xlt","xml","xlsm","xlsb","xltx","xla","xlw","xlr");
+        excelFileChooser.setFileFilter(filter1);
+        parent.add(excelFileChooser, BorderLayout.CENTER);
+        int result = excelFileChooser.showOpenDialog(parent);
+        if (result == JFileChooser.APPROVE_OPTION) {
+
+            File file = excelFileChooser.getSelectedFile();
+            Excel excel = excelService.findByFilePath(file.getAbsolutePath());
+            String json= null;
+            try {
+                json = BeanUtil.javaToJson(OLE2OfficeExcelUtils.getData(file));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            if(excel==null){
+                excel=new Excel();
+                excel.setPath(file.getAbsolutePath());
+
+            }
+            excel.setLastOpenDate(new Date());
+            excel.setDataJson(json==null?null:json.getBytes(StandardCharsets.UTF_8));
+//            System.out.println(new String(excel.getDataJson(),StandardCharsets.UTF_8));
+            excel=excelService.save(excel);
+            Constant.currentExcel=excel;
+
+
+        }
+
+
+        return result;
+    }
     public static JTabbedPane drawTabbedPaneOfExcelExportReview(List<ExcelData> excelDataList){
         Map<String,List<ExcelData>> groupedExcelDataMap= excelDataListToMap(excelDataList);
         JTabbedPane jTabbedPane=new JTabbedPane();
@@ -149,4 +223,47 @@ public class ComponentsDrawTools {
         }
         return null;
     }
+
+    public static void exportExcel(List<ExcelData> excelDataList,ExcelService excelService,JComponent fileChooserParentComponent) {
+        String currentDir;
+        if(Constant.currentExcel!=null){
+            currentDir=Constant.currentExcel.getPath();
+        }else {
+            Excel excel=excelService.findByLastOpenDateGreatest();
+            currentDir=excel==null?null:excel.getPath();
+        }
+        JFileChooser fileChooser=new JFileChooser(currentDir);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooserParentComponent.add(fileChooser, BorderLayout.CENTER);
+        int result = fileChooser.showOpenDialog(fileChooserParentComponent);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            String fileName= DateTimeUtil.DateRepresentation.toString(new Date(),DateTimeUtil.DateFormatString.yyyyMMddHHmmss)+".xls";
+            String exportFile=file.getAbsolutePath()+File.separator+fileName;
+            ClassPathResource resource=new ClassPathResource("templates/template.xls");
+            Map<String, List<ExcelData>> data= ComponentsDrawTools.excelDataListToMap(excelDataList);
+            for (Map.Entry<String, List<ExcelData>>entry:data.entrySet()){
+
+            }
+            InputStream in = null;
+            final String[] columnNames=new String[]{"排名","姓名","登录次数","浏览次数","点赞次数","评论次数","分享次数","总次数"};
+            try {
+                in=resource.getInputStream();
+                XLSExcelUtils.exportExcelFromInputStream(in,exportFile,data,columnNames,0,0,true);
+                JOptionPane.showMessageDialog(fileChooserParentComponent,"文件“"+exportFile+"”导出成功!");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                JOptionPane.showMessageDialog(fileChooserParentComponent,"程序异常!","警告:",JOptionPane.WARNING_MESSAGE);
+            }finally {
+                if (null != in) {
+                    try {
+                        in.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
 }

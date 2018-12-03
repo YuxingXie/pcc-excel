@@ -71,4 +71,9 @@ public class Excel {
 //        OLE2OfficeExcelUtils.printSortedMap(sortedMap);
         return sortedMap;
     }
+
+    @Override
+    public String toString() {
+        return path;
+    }
 }

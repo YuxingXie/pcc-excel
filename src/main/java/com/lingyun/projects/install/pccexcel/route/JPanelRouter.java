@@ -1,15 +1,17 @@
 package com.lingyun.projects.install.pccexcel.route;
 
-import com.lingyun.projects.install.pccexcel.components.TopFramePanel;
+import com.lingyun.common.support.util.clazz.BeanUtil;
+import com.lingyun.projects.install.pccexcel.components.panels.TopComponent;
 
-import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.List;
 
-public class JPanelRouter extends BasicRooter<TopFramePanel>{
+public class JPanelRouter extends BasicRooter<TopComponent>{
 
+
+    private List<TopComponent> alwaysRefreshComponents=new ArrayList<>();
     public void setContainer(Container container) {
         this.container = container;
     }
@@ -20,26 +22,37 @@ public class JPanelRouter extends BasicRooter<TopFramePanel>{
 
     private Container container;
     @Override
-    public void show(TopFramePanel jPanel) {
-        jPanel.reload();
-        jPanel.setVisible(true);
-        jPanel.validate();
-        jPanel.repaint();
+    public void show(TopComponent component) {
+        refreshAlways();
+        component.reload();
+        component.setVisible(true);
+
         if(container!=null){
-            if (Arrays.asList(container.getComponents()).contains(jPanel)){
+            if (Arrays.asList(container.getComponents()).contains(component)){
             }else {
-                container.add(jPanel);
+                container.add(component);
             }
         }
     }
 
     @Override
-    public void hide(TopFramePanel jPanel) {
-        jPanel.setVisible(false);
+    public void hide(TopComponent component) {
+        component.setVisible(false);
         if(container!=null){
-            if (Arrays.asList(container.getComponents()).contains(jPanel)){
-                container.remove(jPanel);
+            if (Arrays.asList(container.getComponents()).contains(component)){
+                container.remove(component);
             }
         }
+
+    }
+    private void refreshAlways(){
+        if(BeanUtil.emptyCollection(alwaysRefreshComponents)) return;
+        for(TopComponent component:alwaysRefreshComponents){
+            System.out.println("refresh always component:"+component.getClass().getSimpleName());
+            component.loadData();
+        }
+    }
+    public void addAlwaysRefreshComponent(TopComponent topComponent){
+        alwaysRefreshComponents.add(topComponent);
     }
 }

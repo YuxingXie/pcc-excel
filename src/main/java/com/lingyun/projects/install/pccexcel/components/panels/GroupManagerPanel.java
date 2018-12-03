@@ -1,8 +1,10 @@
-package com.lingyun.projects.install.pccexcel.components;
+package com.lingyun.projects.install.pccexcel.components.panels;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.date.DateTimeUtil;
 import com.lingyun.common.support.util.string.StringUtils;
+import com.lingyun.projects.install.pccexcel.components.tables.models.PersonGroupTableModel;
+import com.lingyun.projects.install.pccexcel.components.basic.BasicTable;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.entity.PersonGroup;
 import com.lingyun.projects.install.pccexcel.domain.persongroup.repo.PersonGroupRepository;
 import com.lingyun.projects.install.pccexcel.support.ComponentsDrawTools;
@@ -14,7 +16,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupManagerPanel extends TopFramePanel {
+public class GroupManagerPanel extends TopComponent {
     private PersonGroupTableModel personGroupTableModel;
     private BasicTable personGroupTable;
     private JScrollPane personGroupScrollPane;
@@ -42,7 +44,6 @@ public class GroupManagerPanel extends TopFramePanel {
 
     //TODO:Many problems
     public void renderGroupManagerPanel() {
-        System.out.println("渲染用户分组组件");
 //        this.setVisible(false);
         this.setVisible(true);
         setLayout(new BorderLayout());

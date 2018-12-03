@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -39,31 +38,6 @@ public class FileUtil extends FileUtils {
     }
 
 
-    public static void fileDownload(HttpServletResponse response, String filePath) throws IOException {
-        // path是指欲下载的文件的路径。
-        File file = new File(filePath);
-        // 取得文件名。
-        String filename = file.getName();
-        // 取得文件的后缀名。
-        //String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
-
-        // 以流的形式下载文件。
-        InputStream fis = new BufferedInputStream(new FileInputStream(file));
-        byte[] buffer = new byte[fis.available()];
-        fis.read(buffer);
-        fis.close();
-        // 清空response
-        response.reset();
-        // 设置response的Header
-        response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
-        response.addHeader("Content-Length", "" + file.length());
-        OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-        response.setContentType("application/octet-stream");
-        toClient.write(buffer);
-        toClient.flush();
-        toClient.close();
-
-    }
 
 
     private static boolean isExist(String path) {
