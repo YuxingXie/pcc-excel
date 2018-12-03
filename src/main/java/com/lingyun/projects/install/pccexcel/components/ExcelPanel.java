@@ -43,14 +43,12 @@ public class ExcelPanel extends TopFramePanel{
         this.observer=observer;
         this.excelService=excelService;
         this.excelDataRepository = excelDataRepository;
-        initComponents();
-        addBottomButtonGroup();
-//        renderGroupManagerPanel();
+        loadData();
+
     }
 
-    private void initComponents() {
-
-
+    @Override
+    public void loadData() {
         String currentDir;
         if(Constant.currentExcel!=null){
             currentDir=Constant.currentExcel.getPath();
@@ -64,12 +62,12 @@ public class ExcelPanel extends TopFramePanel{
 
 
 
-        excelDataPanel();
+        loadJTabbedPane();
         this.add(this.excelDataPanel);
         JLabel label=new JLabel("双击单元格修改数据且不会覆盖原始文件，点击\"保存\"后会导出到excel中；点击\"刷新\"可以重新载入excel内容。");
         label.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(label,BorderLayout.NORTH);
-
+        addBottomButtonGroup();
 
     }
     private void redrawExcelDataPanel() {
@@ -123,7 +121,7 @@ public class ExcelPanel extends TopFramePanel{
 //                ExcelPanel.this.setVisible(false);
 //                JPanel excelGroupReviewPanel=new ExcelExportReviewPanel(ExcelPanel.this.excelDataRepository);
 //                ExcelPanel.this.add(excelGroupReviewPanel);
-                observer.navigateTo("excelExportReviewPanel");
+                ExcelPanel.this.observer.navigateTo("excelExportReviewPanel");
             }
         });
         buttonGroupPanel.add(preview);
@@ -132,7 +130,8 @@ public class ExcelPanel extends TopFramePanel{
 
         this.add(buttonGroupPanel,BorderLayout.SOUTH);
     }
-    private void excelDataPanel(){
+
+    public void loadJTabbedPane() {
         Excel excel = this.excelService.findByLastOpenDateGreatest();
         Constant.currentExcel=excel;
         this.excelDataPanel = new JTabbedPane();
@@ -188,8 +187,5 @@ public class ExcelPanel extends TopFramePanel{
         }
     }
 
-    @Override
-    public void loadData() {
-        excelDataPanel();
-    }
+
 }

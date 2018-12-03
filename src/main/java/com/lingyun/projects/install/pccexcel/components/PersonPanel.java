@@ -27,11 +27,12 @@ public class PersonPanel extends TopFramePanel {
     public PersonPanel(PersonRepository personRepository,PersonGroupRepository personGroupRepository) {
         this.personRepository=personRepository;
         this.personGroupRepository=personGroupRepository;
-        initComponents();
+        loadData();
     }
 
 
-    private void initComponents() {
+    @Override
+    public void loadData()  {
         this.persons=this.personRepository.findAll();
         this.personGroupList=this.personGroupRepository.findAll();
         this.personTable = new PersonTable(personGroupList);
@@ -79,11 +80,5 @@ public class PersonPanel extends TopFramePanel {
         });
     }
 
-    @Override
-    public void loadData() {
-        this.removeAll();
-        initComponents();
-        this.validate();
-        this.repaint();
-    }
+
 }

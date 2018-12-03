@@ -23,13 +23,14 @@ public class GroupManagerPanel extends TopFramePanel {
     public GroupManagerPanel(PersonGroupRepository personGroupRepository) {
         this.setBackground(Color.LIGHT_GRAY);
         this.personGroupRepository=personGroupRepository;
-        initData();
+        loadData();
 
 
 
     }
 
-    private void initData() {
+    @Override
+    public void loadData() {
 
         this.personGroups =personGroupRepository.findAll();
         this.personGroupTableModel=new PersonGroupTableModel(ComponentsDrawTools.getRowDataOfPersonGroups(this.personGroups),ComponentsDrawTools.getColumnNamesOfPersonGroups());
@@ -141,10 +142,5 @@ public class GroupManagerPanel extends TopFramePanel {
         });
     }
 
-    @Override
-    public void loadData() {
-        initData();
-        this.validate();
-        this.repaint();
-    }
+
 }

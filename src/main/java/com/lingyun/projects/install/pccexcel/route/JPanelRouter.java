@@ -21,7 +21,7 @@ public class JPanelRouter extends BasicRooter<TopFramePanel>{
     private Container container;
     @Override
     public void show(TopFramePanel jPanel) {
-        jPanel.loadData();
+        jPanel.reload();
         jPanel.setVisible(true);
         jPanel.validate();
         jPanel.repaint();

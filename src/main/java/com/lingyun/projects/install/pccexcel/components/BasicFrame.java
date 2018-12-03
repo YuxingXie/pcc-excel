@@ -1,7 +1,10 @@
 package com.lingyun.projects.install.pccexcel.components;
 
+import org.springframework.core.io.ClassPathResource;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class BasicFrame extends JFrame {
     public BasicFrame() {
@@ -14,7 +17,13 @@ public class BasicFrame extends JFrame {
         setLocation(screenWidth / 4, screenHeight / 4);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("宁乡市政协excel工具");
-        setIconImage(new ImageIcon(ClassLoader.getSystemResource("images/icon/icon.png")).getImage());
+        try {
+            setIconImage(new ImageIcon(new ClassPathResource("/images/icon/icon.png").getURL()).getImage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         setLocationByPlatform(true);
     }
 }

@@ -31,11 +31,11 @@ public class ExcelExportReviewPanel extends TopFramePanel{
     public ExcelExportReviewPanel(ExcelDataRepository excelDataRepository, ExcelService excelService) {
         this.excelService=excelService;
         this.excelDataRepository=excelDataRepository;
-        initDataAndComponents();
+        loadData();
 
     }
-
-    private void initDataAndComponents() {
+    @Override
+    public void loadData() {
         List<ExcelData> excelDataList=this.excelDataRepository.findByExcel(Constant.currentExcel);
 //        List<ExcelData> excelDataList=this.excelDataRepository.findExcelDataListOrderByTotalCount(Constant.currentExcel);
         excelDataTabbedPanel= ComponentsDrawTools.drawTabbedPaneOfExcelExportReview(excelDataList);
@@ -89,10 +89,5 @@ public class ExcelExportReviewPanel extends TopFramePanel{
 
     }
 
-    @Override
-    public void loadData() {
-        initDataAndComponents();
-        this.validate();
-        this.repaint();
-    }
+
 }
