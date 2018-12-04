@@ -17,7 +17,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LeftMenuTreeComponent extends TopComponent {
+public class LeftMenuTreeComponent extends TopComponent implements TreeSelectionListener {
     private JTree tree;
     private ExcelService excelService;
     private ExcelDataRepository excelDataRepository;
@@ -59,7 +59,8 @@ public class LeftMenuTreeComponent extends TopComponent {
         java.util.List<Excel> excelList=excelService.finAll();
 
 
-
+        tree.removeMouseListener(mouseAdapter);
+        tree.removeTreeSelectionListener(this);
         while (node1.getChildCount()>0){
             DefaultMutableTreeNode child = (DefaultMutableTreeNode)node1.getChildAt(node1.getChildCount()-1);
             model.removeNodeFromParent(child);
@@ -78,6 +79,8 @@ public class LeftMenuTreeComponent extends TopComponent {
 
         }
 
+        tree.addMouseListener(mouseAdapter);
+        tree.addTreeSelectionListener(this);
     }
     private void addLeftTree() {
 
@@ -113,60 +116,10 @@ public class LeftMenuTreeComponent extends TopComponent {
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-
-                if (node == null)
-                    return;
-//                tree.expandPath(new TreePath(node.getPath()));
-                tree.setSelectionPath(new TreePath(node.getPath()));
-                Object object = node.getUserObject();
-                if (node.isLeaf()) {
-                    if("人员管理".equals(object.toString())){
-                        System.out.println(object);
-                        observer.navigateTo("personPanel");
-                    }else if("分类管理".equals(object.toString())){
-                        observer.navigateTo("groupManagerPanel");
-                    }else {
-                        if(object instanceof Excel){
-                            Constant.currentExcel=(Excel) object;
-                            observer.navigateTo("excelPanel");
-
-                        }
-                    }
-                }
+        tree.addTreeSelectionListener(this);
 
 
-            }
-        });
-
-
-
-
-        tree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-
-                    TreePath tp=tree.getPathForLocation(e.getX(),e.getY());
-                    if (tp != null) {
-
-                        DefaultMutableTreeNode node =  (DefaultMutableTreeNode)tp.getLastPathComponent();
-                        Object object =node.getUserObject();
-                        if (object instanceof  Excel){
-                            Excel excel = (Excel) object;
-                            LeftMenuTreeComponent.this.popMenuExcel=excel;
-                            popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                        }
-                    }
-                }
-            }
-        });
-
-
+        tree.addMouseListener(mouseAdapter);
 
         JMenuItem mPreview, mDel,mExport;
         popupMenu = new JPopupMenu();
@@ -199,6 +152,50 @@ public class LeftMenuTreeComponent extends TopComponent {
     }
 
 
+    private MouseAdapter mouseAdapter =new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (SwingUtilities.isRightMouseButton(e)) {
+
+                TreePath tp=tree.getPathForLocation(e.getX(),e.getY());
+                if (tp != null) {
+
+                    DefaultMutableTreeNode node =  (DefaultMutableTreeNode)tp.getLastPathComponent();
+                    Object object =node.getUserObject();
+                    if (object instanceof  Excel){
+                        Excel excel = (Excel) object;
+                        LeftMenuTreeComponent.this.popMenuExcel=excel;
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    }
+                }
+            }
+        }
+    };
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+        if (node == null)
+            return;
+//                tree.expandPath(new TreePath(node.getPath()));
+        tree.setSelectionPath(new TreePath(node.getPath()));
+        Object object = node.getUserObject();
+        if (node.isLeaf()) {
+            if("人员管理".equals(object.toString())){
+                System.out.println(object);
+                observer.navigateTo("personPanel");
+            }else if("分类管理".equals(object.toString())){
+                observer.navigateTo("groupManagerPanel");
+            }else {
+                if(object instanceof Excel){
+                    Constant.currentExcel=(Excel) object;
+                    observer.navigateTo("excelPanel");
+
+                }
+            }
+        }
 
 
+    }
 }

@@ -151,8 +151,10 @@ public class HomeFrame extends BasicFrame {
         JMenu menuHelp = new JMenu("帮助");
         JMenuItem menuItemHelp1 = new JMenuItem("分组依据");
         JMenuItem menuItemHelp2 = new JMenuItem("查看日志");
+        JMenuItem aboutMenuItem = new JMenuItem("关于");
         menuHelp.add(menuItemHelp1);
         menuHelp.add(menuItemHelp2);
+        menuHelp.add(aboutMenuItem);
         this.menuBar.add(menuHelp);
     }
 
