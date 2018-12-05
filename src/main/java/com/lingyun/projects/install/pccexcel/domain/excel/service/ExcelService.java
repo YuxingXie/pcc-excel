@@ -2,6 +2,7 @@ package com.lingyun.projects.install.pccexcel.domain.excel.service;
 
 import com.lingyun.common.support.util.clazz.BeanUtil;
 import com.lingyun.common.support.util.string.StringUtils;
+import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.ExcelData;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
@@ -96,6 +97,7 @@ public class ExcelService {
         int d=excelDataRepository.deleteAllByExcel(excel);
         System.out.println("删除 "+d+" 条");
         saveExcelDataAndPeople(excel);
+        Constant.currentExcel=excel;
         return excel;
     }
 
@@ -107,5 +109,6 @@ public class ExcelService {
     public void delete(Excel excel) {
         excelDataRepository.deleteAllByExcel(excel);
         excelRepository.delete(excel);
+        Constant.currentExcel=findByLastOpenDateGreatest();
     }
 }

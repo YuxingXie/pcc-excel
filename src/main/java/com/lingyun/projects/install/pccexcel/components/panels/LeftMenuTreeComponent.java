@@ -29,6 +29,7 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
     private DefaultMutableTreeNode node2_1;
     private DefaultMutableTreeNode node2_2;
     private Excel popMenuExcel;
+    private DefaultMutableTreeNode popMenuNode;
     private DefaultTreeModel model;
     public LeftMenuTreeComponent(ExcelService excelService, ExcelDataRepository excelDataRepository, JPanelRouter observer) {
         this.excelService=excelService;
@@ -44,21 +45,12 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
 
 
         addLeftTree();
-        this.observer.addAlwaysRefreshComponent(this);
+//        this.observer.addAlwaysRefreshComponent(this);
     }
-
-    public JTree getTree() {
-        return tree;
-    }
-
     @Override
     public void loadData() {
 
-
-//        root.removeAllChildren();
         java.util.List<Excel> excelList=excelService.finAll();
-
-
         tree.removeMouseListener(mouseAdapter);
         tree.removeTreeSelectionListener(this);
         while (node1.getChildCount()>0){
@@ -76,32 +68,27 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
             TreeNode[] treeNodes=model.getPathToRoot(excelNode);
             TreePath treePath = new TreePath(treeNodes);
             tree.makeVisible(treePath);
-
         }
 
         tree.addMouseListener(mouseAdapter);
         tree.addTreeSelectionListener(this);
     }
     private void addLeftTree() {
-
+        this.removeAll();
         model = new DefaultTreeModel(top) ;
 
         java.util.List<Excel> excelList=excelService.finAll();
         for(Excel excel:excelList){
             DefaultMutableTreeNode excelNode=new DefaultMutableTreeNode(excel);
             excelNode.setAllowsChildren(false);
-//            node1.add(excelNode);
             model.insertNodeInto(excelNode,node1,node1.getChildCount());
-
         }
-
         node2.add(node2_1);
         node2.add(node2_2);
         top.add(node1);
         top.add(node2);
 
         model.setAsksAllowsChildren(true);
-
         tree = new JTree(model){
             @Override
             public TreeCellRenderer getCellRenderer() {
@@ -111,7 +98,7 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
             }
         };
         tree.setRowHeight(24);
-
+        add(tree);
 //        tree.setRootVisible(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
@@ -130,7 +117,11 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
         mPreview.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 observer.navigateTo("excelExportReviewPanel");
+                TreePath treePath=new TreePath(LeftMenuTreeComponent.this.popMenuNode.getPath());
+                LeftMenuTreeComponent.this.tree.setSelectionPath(treePath);
+                Constant.currentExcel=LeftMenuTreeComponent.this.popMenuExcel;
             }
         });
         mDel.addActionListener(new ActionListener() {
@@ -138,6 +129,7 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
             public void actionPerformed(ActionEvent e) {
                 LeftMenuTreeComponent.this.excelService.delete(LeftMenuTreeComponent.this.popMenuExcel);
                 LeftMenuTreeComponent.this.loadData();
+                observer.navigateTo("excelPanel");
             }
         });
         mExport.addActionListener(new ActionListener() {
@@ -165,6 +157,7 @@ public class LeftMenuTreeComponent extends TopComponent implements TreeSelection
                     if (object instanceof  Excel){
                         Excel excel = (Excel) object;
                         LeftMenuTreeComponent.this.popMenuExcel=excel;
+                        LeftMenuTreeComponent.this.popMenuNode=node;
                         popupMenu.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }

@@ -5,6 +5,7 @@ import com.lingyun.common.support.util.file.OLE2OfficeExcelUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +75,8 @@ public class Excel {
 
     @Override
     public String toString() {
-        return path;
+        if (!path.contains(File.separator)) return path;
+        if (path.endsWith(File.separator)) return path;
+        return path.substring(path.lastIndexOf(File.separator)+1);
     }
 }

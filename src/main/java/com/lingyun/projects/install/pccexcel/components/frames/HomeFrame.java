@@ -3,7 +3,6 @@ package com.lingyun.projects.install.pccexcel.components.frames;
 import com.lingyun.projects.install.pccexcel.components.TextComponent;
 import com.lingyun.projects.install.pccexcel.components.basic.BasicFrame;
 import com.lingyun.projects.install.pccexcel.components.panels.*;
-import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
@@ -26,13 +25,7 @@ public class HomeFrame extends BasicFrame {
     private ExcelExportReviewPanel excelExportReviewPanel;
     private GroupManagerPanel groupManagerPanel;
     private JMenuBar menuBar;
-    private JToolBar toolBar;
-    LeftMenuTreeComponent leftMenuTreeComponent;
-    private JTree leftMenuTree;
-    private ExcelDataRepository excelDataRepository;
-    private PersonGroupRepository personGroupRepository;
-    private ExcelService excelService;
-    private PersonRepository personRepository;
+    LeftMenuTreeComponent menuTree;
     private TextComponent consolePanel;
     public HomeFrame(JPanelRouter observer,ExcelService excelService,
                      PersonGroupRepository personGroupRepository,
@@ -42,17 +35,15 @@ public class HomeFrame extends BasicFrame {
 
 
         this.observer = observer;
-        this.excelDataRepository=excelDataRepository;
-        this.personGroupRepository=personGroupRepository;
-        this.excelService=excelService;
-        this.personRepository=personRepository;
-        this.excelExportReviewPanel=new ExcelExportReviewPanel(this.excelDataRepository,excelService);
-        personPanel=new PersonPanel(this.personRepository,this.personGroupRepository);
-        groupManagerPanel=new GroupManagerPanel(this.personGroupRepository);
-        this.excelPanel = new ExcelPanel(this.excelService,this.excelDataRepository,this.observer);
+
+        this.excelExportReviewPanel=new ExcelExportReviewPanel(excelDataRepository,excelService);
+        personPanel=new PersonPanel(personRepository,personGroupRepository);
+        groupManagerPanel=new GroupManagerPanel(personGroupRepository);
+        menuTree =new LeftMenuTreeComponent(excelService,excelDataRepository,this.observer);
+        this.excelPanel = new ExcelPanel(menuTree,excelService,this.observer);
         this.consolePanel = new TextComponent(consoleTextField);
-        this.leftMenuTreeComponent=new LeftMenuTreeComponent(this.excelService,this.excelDataRepository,this.observer);
-        this.leftMenuTree=leftMenuTreeComponent.getTree();
+
+//        this.observer.addAlwaysRefreshComponent(menuTree);
 
         this.menuBar = new JMenuBar();
         setJMenuBar(this.menuBar);
@@ -67,47 +58,8 @@ public class HomeFrame extends BasicFrame {
 
 
         add(this.excelPanel, BorderLayout.CENTER);
-        add(this.leftMenuTree, BorderLayout.WEST);
-    }
-
-
-
-    private void addToolBar() {
-        try {
-            toolBar= new JToolBar();
-            toolBar.setBorderPainted(false);
-            toolBar.setFloatable(false);
-            toolBar.setBackground(Color.WHITE);
-            ImageIcon forwardIcon=new ImageIcon(new ClassPathResource("/images/icon/theme/office/arraw-right.png").getURL());
-            forwardIcon.setDescription("前进");
-            forwardIcon.setImage(forwardIcon.getImage().getScaledInstance(30,30,Image.SCALE_DEFAULT));
-            JButton forwardBtn = new JButton(forwardIcon);
-
-            ImageIcon backBtnIcon=new ImageIcon(new ClassPathResource("/images/icon/theme/office/arraw-left.png").getURL());
-            backBtnIcon.setDescription("返回");
-            backBtnIcon.setImage(backBtnIcon.getImage().getScaledInstance(30,30,Image.SCALE_DEFAULT));
-            JButton backBtn = new JButton(backBtnIcon);
-
-            forwardBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    observer.forward();
-                }
-            });
-            backBtn.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    observer.back();
-                }
-            });
-
-            toolBar.add(backBtn);
-            toolBar.add(forwardBtn);
-            this.add(toolBar, BorderLayout.NORTH);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        add(this.leftMenuTree, BorderLayout.WEST);
+        add(menuTree, BorderLayout.WEST);
     }
 
     private void registerRouter() {

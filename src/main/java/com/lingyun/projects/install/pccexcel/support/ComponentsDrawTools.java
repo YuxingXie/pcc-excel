@@ -52,6 +52,7 @@ public class ComponentsDrawTools {
             tree.collapsePath(parent);
         }
     }
+
     public static int openFileChooser(ExcelService excelService, JComponent parent) {
         String currentDir;
         if(Constant.currentExcel!=null){
@@ -66,6 +67,7 @@ public class ComponentsDrawTools {
         parent.add(excelFileChooser, BorderLayout.CENTER);
         int result = excelFileChooser.showOpenDialog(parent);
         if (result == JFileChooser.APPROVE_OPTION) {
+
             File file = excelFileChooser.getSelectedFile();
             Excel excel = excelService.findByFilePath(file.getAbsolutePath());
             String json= null;
