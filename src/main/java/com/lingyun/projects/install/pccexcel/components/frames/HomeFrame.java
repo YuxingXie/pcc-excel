@@ -1,7 +1,9 @@
 package com.lingyun.projects.install.pccexcel.components.frames;
 
+import com.lingyun.projects.install.pccexcel.components.TextComponent;
 import com.lingyun.projects.install.pccexcel.components.basic.BasicFrame;
 import com.lingyun.projects.install.pccexcel.components.panels.*;
+import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
 import com.lingyun.projects.install.pccexcel.domain.excel.service.ExcelService;
@@ -31,14 +33,15 @@ public class HomeFrame extends BasicFrame {
     private PersonGroupRepository personGroupRepository;
     private ExcelService excelService;
     private PersonRepository personRepository;
+    private TextComponent consolePanel;
     public HomeFrame(JPanelRouter observer,ExcelService excelService,
                      PersonGroupRepository personGroupRepository,
                      ExcelDataRepository excelDataRepository,
+                     JTextField consoleTextField,
                      PersonRepository personRepository,Excel excel) {
 
 
         this.observer = observer;
-
         this.excelDataRepository=excelDataRepository;
         this.personGroupRepository=personGroupRepository;
         this.excelService=excelService;
@@ -47,6 +50,7 @@ public class HomeFrame extends BasicFrame {
         personPanel=new PersonPanel(this.personRepository,this.personGroupRepository);
         groupManagerPanel=new GroupManagerPanel(this.personGroupRepository);
         this.excelPanel = new ExcelPanel(this.excelService,this.excelDataRepository,this.observer);
+        this.consolePanel = new TextComponent(consoleTextField);
         this.leftMenuTreeComponent=new LeftMenuTreeComponent(this.excelService,this.excelDataRepository,this.observer);
         this.leftMenuTree=leftMenuTreeComponent.getTree();
 
@@ -111,6 +115,7 @@ public class HomeFrame extends BasicFrame {
         this.observer.addRouterPoint("personPanel",this.personPanel);
         this.observer.addRouterPoint("groupManagerPanel",this.groupManagerPanel);
         this.observer.addRouterPoint("excelExportReviewPanel",this.excelExportReviewPanel);
+        this.observer.addRouterPoint("consolePanel", consolePanel);
     }
 
     private void addMenuBarItems() {
@@ -151,6 +156,12 @@ public class HomeFrame extends BasicFrame {
         JMenu menuHelp = new JMenu("帮助");
         JMenuItem menuItemHelp1 = new JMenuItem("分组依据");
         JMenuItem menuItemHelp2 = new JMenuItem("查看日志");
+        menuItemHelp2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                observer.navigateTo("textComponent");
+            }
+        });
         JMenuItem aboutMenuItem = new JMenuItem("关于");
         menuHelp.add(menuItemHelp1);
         menuHelp.add(menuItemHelp2);

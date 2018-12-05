@@ -1,6 +1,7 @@
 package com.lingyun.common.configs;
 
 
+import com.lingyun.projects.install.pccexcel.components.JTextComponentPrintStream;
 import com.lingyun.projects.install.pccexcel.components.frames.HomeFrame;
 import com.lingyun.projects.install.pccexcel.config.Constant;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelRepository;
@@ -17,16 +18,15 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @SpringBootApplication
         (scanBasePackages = {
-        "com.lingyun.projects.install.**.controller",
-                "com.lingyun.projects.install.pccexcel.domain.excel.service",
+        "com.lingyun.projects.install.pccexcel.domain.**.service",
         "com.lingyun.projects.install.**.config",
-        "com.lingyun.common.annotation.controller",
         "com.lingyun.common.configs"
         })
 @EnableJpaRepositories(basePackages = {"com.lingyun.projects.install.**.repo"})
@@ -67,6 +67,10 @@ public class Application implements ApplicationListener<ContextRefreshedEvent> {
             personGroups.add(personGroup4);
             personGroupRepository.save(personGroups);
         }
+        JTextField consoleTextField=context.getBean("consoleTextField",JTextField.class);
+//        JTextComponentPrintStream mps = new JTextComponentPrintStream(System.out,consoleTextField );
+//        System.setOut(mps);
+//        System.setErr(mps);
         HomeFrame appFrame = context.getBean(HomeFrame.class);
 //        appFrame.pack();
         appFrame.setVisible(true);

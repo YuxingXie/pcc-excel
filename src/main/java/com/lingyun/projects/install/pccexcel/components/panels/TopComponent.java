@@ -6,6 +6,7 @@ import java.awt.*;
 public abstract class TopComponent extends JComponent {
     public TopComponent() {
         setLayout(new BorderLayout());
+
     }
     public abstract void loadData();
     public void reload(){
@@ -14,5 +15,9 @@ public abstract class TopComponent extends JComponent {
         this.validate();
         this.repaint();
 
+    }
+    public String routerName(){
+        String routerName= this.getClass().getSimpleName();
+        return routerName;
     }
 }

@@ -66,7 +66,6 @@ public class ComponentsDrawTools {
         parent.add(excelFileChooser, BorderLayout.CENTER);
         int result = excelFileChooser.showOpenDialog(parent);
         if (result == JFileChooser.APPROVE_OPTION) {
-
             File file = excelFileChooser.getSelectedFile();
             Excel excel = excelService.findByFilePath(file.getAbsolutePath());
             String json= null;

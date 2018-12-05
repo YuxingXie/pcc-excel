@@ -115,8 +115,11 @@ public class ExcelPanel extends TopComponent {
 
     public void loadJTabbedPane() {
         Excel excel = Constant.currentExcel;
-        if(excel==null)
+        if(excel==null){
             excel=this.excelService.findByLastOpenDateGreatest();
+            Constant.currentExcel=excel;
+        }
+
 
         this.excelDataPanel = new JTabbedPane();
         if(excel==null) {

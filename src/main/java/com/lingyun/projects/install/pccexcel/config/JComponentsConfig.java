@@ -1,5 +1,6 @@
 package com.lingyun.projects.install.pccexcel.config;
 
+import com.lingyun.projects.install.pccexcel.components.TextComponent;
 import com.lingyun.projects.install.pccexcel.components.frames.HomeFrame;
 import com.lingyun.projects.install.pccexcel.domain.excel.entity.Excel;
 import com.lingyun.projects.install.pccexcel.domain.excel.repo.ExcelDataRepository;
@@ -12,12 +13,14 @@ import com.lingyun.projects.install.pccexcel.route.Publisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.swing.*;
+
 @Configuration
 public class JComponentsConfig {
     @Bean
     public HomeFrame homeFrame(JPanelRouter observer,ExcelService excelService, PersonGroupRepository personGroupRepository,
-                               ExcelDataRepository excelDataRepository, PersonRepository personRepository,Excel excel) {
-        return new HomeFrame(observer,excelService,personGroupRepository,excelDataRepository,personRepository,excel);
+                               ExcelDataRepository excelDataRepository,JTextField consoleTextField, PersonRepository personRepository,Excel excel) {
+        return new HomeFrame(observer,excelService,personGroupRepository,excelDataRepository,consoleTextField,personRepository,excel);
     }
     @Bean
     public JPanelRouter observer(){
@@ -34,5 +37,10 @@ public class JComponentsConfig {
         Excel excel= excelService.findByLastOpenDateGreatest();
         Constant.currentExcel=excel;
         return excel;
+    }
+
+    @Bean
+    public JTextField consoleTextField(){
+        return new JTextField("日志：");
     }
 }

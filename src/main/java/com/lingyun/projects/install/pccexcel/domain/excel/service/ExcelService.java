@@ -48,11 +48,12 @@ public class ExcelService {
         return null;
     }
     @Transactional
-    public List<ExcelData> saveExcelData(Excel excel) {
+    public List<ExcelData> saveExcelDataAndPeople(Excel excel) {
         SortedMap<String, List<List<Object>>> sortedMap=excel.toSortedMap();
         List<ExcelData> excelDataList=new ArrayList<>();
         List<Person> people=personRepository.findAll();
         int sheetIndex=0;
+        List<Person> peopleToSave=new ArrayList<>();
         for(String sheetName:sortedMap.keySet()){
             int order=0;
             sheetIndex++;
@@ -69,7 +70,7 @@ public class ExcelService {
                 if (person==null&&entry.get(0)!=null){
                     person=new Person();
                     person.setName(entry.get(0).toString());
-                    person=personRepository.save(person);
+                    peopleToSave.add(person);
                 }
                 excelData.setPerson(person);
                 try {
@@ -85,6 +86,8 @@ public class ExcelService {
 
             }
         }
+       personRepository.save(peopleToSave);
+        System.out.println("新增人员："+BeanUtil.javaToJson(peopleToSave));
         return excelDataRepository.save(excelDataList);
     }
     @Transactional
@@ -92,7 +95,7 @@ public class ExcelService {
         excel=excelRepository.save(excel);
         int d=excelDataRepository.deleteAllByExcel(excel);
         System.out.println("删除 "+d+" 条");
-        saveExcelData(excel);
+        saveExcelDataAndPeople(excel);
         return excel;
     }
 
